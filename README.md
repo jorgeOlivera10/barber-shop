@@ -1,85 +1,70 @@
-# CitaFácil — Demo
+# Isolvia — Software de Gestión Premium
 
-**Sistema de reservas online para barberías y peluquerías.**
+**La evolución digital de la barbería y peluquería clásica.**
 
-Demo interactiva de CitaFácil: un SaaS que da a cada barbería su propia web con reservas online y panel de gestión privado.
+Demo interactiva de Isolvia: una plataforma que respeta la artesanía de tu negocio, con una página de reservas web, agenda digital integral y panel directivo.
 
 ---
 
-## Páginas del demo
+## Páginas del demostrador
 
 | Página | Descripción | Audiencia |
 |--------|-------------|-----------|
-| [`index.html`](index.html) | Landing de CitaFácil (marketing del SaaS) | Tú, vendiendo el producto |
-| [`reservar.html`](reservar.html) | Web de "Barbería El Maestro" con reserva online | El cliente final del peluquero |
-| [`panel.html`](panel.html) | Panel de gestión del peluquero | El peluquero (tu cliente) |
+| [`index.html`](index.html) | Presentación del Software Isolvia | Tú, comercializando la plataforma |
+| [`reservar.html`](reservar.html) | Web tipo "Barbería El Maestro" con reservas | El cliente final del negocio |
+| [`panel.html`](panel.html) | Panel de dirección y logística | El dueño / profesional del negocio |
 
-## Cómo usar
+## Cómo usar el MVP
 
-1. Clona o descarga este repositorio
-2. Abre cualquier `.html` en tu navegador
-3. No necesitas servidor, base de datos ni internet
+1. Descarga o clona este repositorio.
+2. Ejecuta `index.html` en cualquier navegador web.
+3. Operatividad inmediata sin bases de datos adicionales requeridas.
 
-### Con GitHub Pages
+### Despliegue en GitHub Pages
 
-Este repo funciona directamente con GitHub Pages:
+Accesible vía URL pública para enviar fácilmente a clientes:
 
-1. Ve a **Settings → Pages** en tu repositorio
-2. En **Source** selecciona `main` branch, carpeta `/ (root)`
-3. Tu demo estará disponible en `https://tu-usuario.github.io/citafacil-demo/`
+1. Dirígete a **Settings → Pages** en este repositorio.
+2. Configura el **Source** principal en el branch `master`, apuntando a la raíz `/ (root)`.
+3. Tu ecosistema Isolvia se desplegará. 
 
-## Qué incluye
+## Atributos del Entorno
 
-### Web del peluquero (`reservar.html`)
-- Hero con imagen de barbería real
-- Sección "Nosotros" con fotos e historia
-- Lista de 5 servicios (sin precios visibles)
-- Galería fotográfica
-- Flujo de reserva completo en 5 pasos
-- Calendario interactivo con disponibilidad
-- Validación de formulario (nombre, teléfono, RGPD)
-- Menú móvil responsive
-- Sección de contacto
+### Módulo de Cliente Final (`reservar.html`)
+- Interfaz premium estilizada para negocios artesanales.
+- Histórico representativo e identificativo visual.
+- Catálogo de servicios enfocado al cuidado exclusivo.
+- Algoritmo visual de reserva de 5 etapas guiadas.
+- Calendario inteligente interactivo.
+- Cuestionario adaptado al RGPD.
+- Navegación optimizada para dispositivos móviles (Responsive UI).
 
-### Panel del barbero (`panel.html`)
-- Dashboard con KPIs (citas, ingresos, no-shows)
-- Lista de citas del día con estados
-- Gráfico de ingresos semanal
-- Gestión de servicios (tabla CRUD)
-- Base de clientes con historial
-- Vista de agenda semanal
-- Navegación entre secciones
+### Módulo de Dirección (`panel.html`)
+- Dashboard analítico con KPI's del negocio.
+- Agenda visual segmentada.
+- Registro visual de ingresos.
+- Entorno de control de inventario de servicios y tarifas.
+- Ficha clínica de clientes (histórico).
+- Interfaz intuitiva enfocada en agilidad.
 
-### Landing SaaS (`index.html`)
-- Página de marketing para vender CitaFácil
-- Secciones de características, cómo funciona, beneficios
-- Llamadas a la acción
+### Entorno Corporativo - Landing (`index.html`)
+- Identidad estética sobria y premium para un mercado selecto.
+- Detalle arquitectónico del sistema. 
+- Transparencia en licencias de software (Studio / Atelier).
 
-## Stack técnico
+## Tecnología
 
-- HTML5, CSS3 vanilla, JavaScript vanilla
-- Sin dependencias, sin frameworks, sin build tools
-- Google Fonts (Inter + Cormorant Garamond)
-- Responsive design (mobile-first)
-- Compatible con cualquier navegador moderno
+- Stack nativo: HTML5 / CSS3 / Vanilla JS.
+- Rendimiento elevado (No Node, no compilación).
+- Tipografías profesionales (Cormorant Garamond, Inter).
 
-## Notas
+## Siguientes Pasos Evolutivos
 
-- **Es un demo visual**: no tiene backend, base de datos ni persistencia
-- Las reservas no se guardan — es un mockup interactivo para mostrar el producto
-- Los días/horas ocupadas en el calendario son simulados
-- Las imágenes son fotos reales incluidas en el repositorio
-
-## Próximos pasos (producción)
-
-Para convertir esto en producto real:
-
-1. **Next.js 14** (App Router) como framework
-2. **Supabase** (PostgreSQL) para base de datos
-3. **Arquitectura multi-tenant**: cada barbería con su dominio
-4. **Stripe** para cobros de suscripción
-5. **Resend** para emails transaccionales
+La estructura está planteada para transicionar hacia un SaaS arquitectónico real:
+1. Capa lógica en `Next.js 14`.
+2. Persistencia en `Supabase/PostgreSQL`.
+3. Resolución multinominada para negocios individuales (cada negocio con su web/url).
+4. Motor de pagos integrado con Stripe.
 
 ---
-
-Creado con fines de demostración comercial.
+*MVP desarrollado exclusivamente como activo comercial y demostrador B2B.*
