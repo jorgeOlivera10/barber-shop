@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CitaFácil — Reservas online para tu barbería o peluquería</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --indigo:#6366f1;--indigo-dark:#4f46e5;--indigo-light:#a5b4fc;
+  --amber:#f59e0b;--dark:#0f172a;--darker:#020617;
+  --slate:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --success:#10b981;--white:#fff;--bg:#f8fafc;
+}
+body{font-family:'Inter',sans-serif;background:var(--darker);color:var(--white);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(2,6,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo{font-size:1.4rem;font-weight:800;color:var(--white)}.logo span{color:var(--indigo)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:.9rem;font-weight:500;transition:.2s}.nav-links a:hover{color:var(--white)}
+.nav-ctas{display:flex;gap:.75rem}
+.btn-ghost{padding:.5rem 1.25rem;border:1px solid rgba(255,255,255,0.2);border-radius:8px;background:transparent;color:var(--white);font-size:.875rem;font-weight:500;cursor:pointer;text-decoration:none;transition:.2s}.btn-ghost:hover{background:rgba(255,255,255,0.1)}
+.btn-primary{padding:.5rem 1.25rem;border:none;border-radius:8px;background:var(--indigo);color:var(--white);font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s}.btn-primary:hover{background:var(--indigo-dark)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 1.5rem 4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(99,102,241,0.25) 0%,transparent 70%)}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:100px;padding:.4rem 1rem;font-size:.8rem;font-weight:600;color:var(--indigo-light);margin-bottom:1.5rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.1;margin-bottom:1.5rem;max-width:800px}
+.hero h1 span{background:linear-gradient(135deg,var(--indigo-light),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,0.65);max-width:580px;line-height:1.7;margin-bottom:2.5rem}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-lg{padding:.875rem 2rem;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-lg.primary{background:var(--indigo);color:var(--white);border:none;box-shadow:0 0 40px rgba(99,102,241,0.4)}.btn-lg.primary:hover{background:var(--indigo-dark);transform:translateY(-2px);box-shadow:0 0 60px rgba(99,102,241,0.5)}
+.btn-lg.outline{background:transparent;color:var(--white);border:2px solid rgba(255,255,255,0.25)}.btn-lg.outline:hover{border-color:var(--white);transform:translateY(-2px)}
+.hero-note{margin-top:1.5rem;font-size:.8rem;color:var(--muted)}
+
+/* MOCKUP PREVIEW */
+.mockup-wrap{margin-top:4rem;position:relative;max-width:960px;margin-left:auto;margin-right:auto}
+.mockup-wrap::before{content:'';position:absolute;inset:-40px;background:radial-gradient(ellipse,rgba(99,102,241,0.2),transparent 70%);z-index:0}
+.mockup-browser{background:#1e293b;border-radius:16px;border:1px solid rgba(255,255,255,0.1);overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.6);position:relative;z-index:1}
+.browser-bar{background:#0f172a;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem}
+.browser-dots{display:flex;gap:6px}.browser-dots span{width:12px;height:12px;border-radius:50%;display:inline-block}
+.browser-dots span:nth-child(1){background:#ef4444}.browser-dots span:nth-child(2){background:#f59e0b}.browser-dots span:nth-child(3){background:#10b981}
+.browser-url{flex:1;background:rgba(255,255,255,0.07);border-radius:6px;padding:.35rem .75rem;font-size:.75rem;color:var(--muted);font-family:monospace}
+.mockup-content{padding:3rem;background:linear-gradient(135deg,#1a1f3a 0%,#0f172a 100%);min-height:400px;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+.mock-panel{background:rgba(255,255,255,0.05);border-radius:12px;padding:1.5rem;border:1px solid rgba(255,255,255,0.1)}
+.mock-panel h4{font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+.mock-stat{margin-bottom:1rem}
+.mock-stat-val{font-size:1.75rem;font-weight:800;color:var(--white)}
+.mock-stat-label{font-size:.75rem;color:var(--muted)}
+.mock-appointment{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:rgba(99,102,241,0.1);border-radius:8px;margin-bottom:.5rem;border-left:3px solid var(--indigo)}
+.mock-apt-time{font-size:.85rem;font-weight:700;color:var(--indigo-light);white-space:nowrap}
+.mock-apt-info{flex:1}.mock-apt-name{font-size:.85rem;font-weight:600;color:var(--white)}
+.mock-apt-service{font-size:.75rem;color:var(--muted)}
+.mock-badge{font-size:.65rem;font-weight:600;padding:.2rem .5rem;border-radius:4px;background:rgba(16,185,129,0.15);color:#10b981}
+
+/* LOGOS TRUST */
+.trust{padding:3rem 2rem;text-align:center;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
+.trust p{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2rem}
+.trust-logos{display:flex;justify-content:center;align-items:center;gap:3rem;flex-wrap:wrap}
+.trust-logo{font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.25)}
+
+/* FEATURES */
+.section{padding:6rem 1.5rem}
+.section-tag{display:inline-block;background:rgba(99,102,241,0.15);color:var(--indigo-light);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.4rem 1rem;border-radius:100px;margin-bottom:1rem}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,2.75rem);margin-bottom:1rem;max-width:600px}
+.section-sub{color:rgba(255,255,255,0.6);font-size:1rem;line-height:1.7;max-width:520px;margin-bottom:3rem}
+.center{text-align:center}.center .section-title,.center .section-sub{margin-left:auto;margin-right:auto}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto}
+.feature-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:2rem;transition:.3s}
+.feature-card:hover{background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3);transform:translateY(-4px)}
+.feature-icon{width:48px;height:48px;border-radius:12px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.25rem}
+.feature-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.5rem}
+.feature-card p{font-size:.875rem;color:rgba(255,255,255,0.6);line-height:1.6}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;max-width:900px;margin:0 auto;position:relative}
+.step{text-align:center;padding:2rem}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--indigo);font-size:1.25rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 0 30px rgba(99,102,241,0.4)}
+.step h3{font-size:1rem;font-weight:700;margin-bottom:.5rem}
+.step p{font-size:.875rem;color:rgba(255,255,255,0.6);line-height:1.6}
+
+/* DEMO SPLIT */
+.demo-split{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.demo-split.reverse{direction:rtl}.demo-split.reverse>*{direction:ltr}
+.demo-text .section-title{max-width:400px}
+.demo-mockup{background:rgba(255,255,255,0.04);border-radius:20px;border:1px solid rgba(255,255,255,0.1);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.demo-nav-sm{background:#0f172a;padding:.75rem 1rem;display:flex;gap:.5rem}.demo-nav-sm span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2)}
+.demo-body{padding:1.5rem}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:750px;margin:0 auto}
+.plan-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2.5rem;position:relative;transition:.3s}
+.plan-card.popular{background:rgba(99,102,241,0.08);border-color:var(--indigo);box-shadow:0 0 60px rgba(99,102,241,0.15)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--indigo);color:var(--white);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.35rem 1rem;border-radius:100px}
+.plan-name{font-size:.875rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.plan-price{font-size:3rem;font-weight:900;line-height:1}
+.plan-price span{font-size:1rem;font-weight:400;color:var(--muted)}
+.plan-desc{font-size:.875rem;color:var(--muted);margin:.75rem 0 1.5rem}
+.plan-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:1.5rem 0}
+.plan-features{list-style:none;margin-bottom:2rem}
+.plan-features li{font-size:.875rem;padding:.5rem 0;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:.5rem}
+.plan-features li::before{content:'✓';color:var(--success);font-weight:700}
+.btn-plan{width:100%;padding:1rem;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;text-align:center;display:block;text-decoration:none}
+.btn-plan.indigo{background:var(--indigo);color:var(--white);border:none}.btn-plan.indigo:hover{background:var(--indigo-dark)}
+.btn-plan.outline{background:transparent;color:var(--white);border:2px solid rgba(255,255,255,0.2)}.btn-plan.outline:hover{border-color:rgba(255,255,255,0.5)}
+
+/* CTA BANNER */
+.cta-banner{max-width:800px;margin:0 auto;text-align:center;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(245,158,11,0.1));border:1px solid rgba(99,102,241,0.3);border-radius:24px;padding:4rem 2rem}
+.cta-banner h2{font-family:'Playfair Display',serif;font-size:clamp(1.75rem,4vw,2.5rem);margin-bottom:1rem}
+.cta-banner p{color:rgba(255,255,255,0.65);margin-bottom:2rem;font-size:1.05rem;line-height:1.6}
+
+/* FOOTER */
+footer{padding:3rem 2rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;flex-wrap:wrap;gap:1rem}
+footer .logo{font-size:1.1rem}
+footer p{font-size:.8rem;color:var(--muted)}
+footer a{font-size:.8rem;color:var(--muted);text-decoration:none;margin-left:1.5rem}.footer a:hover{color:var(--white)}
+
+/* MOBILE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .mockup-content{grid-template-columns:1fr}
+  .demo-split{grid-template-columns:1fr}.demo-split.reverse{direction:ltr}
+  .hero h1{font-size:2rem}
+  footer{flex-direction:column;text-align:center}
+}
+
+/* ANIMATIONS */
+.fade-up{opacity:0;transform:translateY(30px);transition:.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Cita<span>Fácil</span></div>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="reservar.html">Demo reserva</a></li>
+    <li><a href="panel.html">Demo panel</a></li>
+  </ul>
+  <div class="nav-ctas">
+    <a href="panel.html" class="btn-ghost">Ver panel</a>
+    <a href="reservar.html" class="btn-primary">Ver demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-badge">Reservas online para peluquerias y barberias</div>
+    <h1>Tu barbería merece más<br>que <span>WhatsApp</span></h1>
+    <p>CitaFácil da a tu negocio una página de reservas profesional, agenda digital y recordatorios automáticos — configurado en menos de 30 minutos.</p>
+    <div class="hero-ctas">
+      <a href="reservar.html" class="btn-lg primary">Ver como reservan tus clientes</a>
+      <a href="panel.html" class="btn-lg outline">Ver tu panel de control</a>
+    </div>
+    <p class="hero-note">30 días gratis · Sin tarjeta · Cancela cuando quieras</p>
+
+    <div class="mockup-wrap fade-up">
+      <div class="mockup-browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url">barberia-carlos.citafacil.es/panel</div>
+        </div>
+        <div class="mockup-content">
+          <div>
+            <div class="mock-panel">
+              <h4>Hoy — Martes 11 Abril</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+                <div class="mock-stat"><div class="mock-stat-val">6</div><div class="mock-stat-label">Citas hoy</div></div>
+                <div class="mock-stat"><div class="mock-stat-val" style="color:#10b981">€148</div><div class="mock-stat-label">Ingresos hoy</div></div>
+              </div>
+              <div class="mock-appointment">
+                <div class="mock-apt-time">10:00</div>
+                <div class="mock-apt-info"><div class="mock-apt-name">Carlos M.</div><div class="mock-apt-service">Corte + Barba · 45min</div></div>
+                <span class="mock-badge">✓</span>
+              </div>
+              <div class="mock-appointment">
+                <div class="mock-apt-time">11:30</div>
+                <div class="mock-apt-info"><div class="mock-apt-name">Roberto L.</div><div class="mock-apt-service">Corte pelo · 30min</div></div>
+                <span class="mock-badge">✓</span>
+              </div>
+              <div class="mock-appointment" style="border-color:var(--amber)">
+                <div class="mock-apt-time">12:30</div>
+                <div class="mock-apt-info"><div class="mock-apt-name">Miguel Á.</div><div class="mock-apt-service">Tratamiento · 60min</div></div>
+                <span class="mock-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">Próx</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="mock-panel">
+              <h4>Esta semana</h4>
+              <div class="mock-stat" style="margin-bottom:1.5rem"><div class="mock-stat-val" style="color:#a5b4fc">€490</div><div class="mock-stat-label">Ingresos semana</div></div>
+              <div style="display:flex;align-items:flex-end;gap:.5rem;height:80px;margin-bottom:.5rem">
+                <div style="flex:1;background:rgba(99,102,241,0.3);height:50%;border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;background:rgba(99,102,241,0.3);height:70%;border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;background:rgba(99,102,241,0.5);height:90%;border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;background:var(--indigo);height:100%;border-radius:4px 4px 0 0"></div>
+                <div style="flex:1;background:rgba(99,102,241,0.3);height:60%;border-radius:4px 4px 0 0"></div>
+              </div>
+              <div style="display:flex;gap:.5rem;font-size:.65rem;color:var(--muted)">
+                <span style="flex:1;text-align:center">L</span><span style="flex:1;text-align:center">M</span>
+                <span style="flex:1;text-align:center">X</span><span style="flex:1;text-align:center">J</span><span style="flex:1;text-align:center">V</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust">
+  <p>Ya confían en CitaFácil</p>
+  <div class="trust-logos">
+    <span class="trust-logo">Barberia El Maestro</span>
+    <span class="trust-logo">Killy Barbershop</span>
+    <span class="trust-logo">Carlos Peluqueria</span>
+    <span class="trust-logo">Style Studio</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section center" id="como-funciona">
+  <div>
+    <div class="section-tag">Cómo funciona</div>
+    <h2 class="section-title">Listo en 3 pasos.<br>Sin complicaciones.</h2>
+    <p class="section-sub">No necesitas saber de tecnología. En menos de 30 minutos tienes tu página de reservas funcionando.</p>
+    <div class="steps fade-up">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Crea tu cuenta</h3>
+        <p>Regístrate, introduce los datos de tu barbería, horarios y servicios con sus precios.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Comparte tu enlace</h3>
+        <p>Tus clientes pueden reservar desde tu web, Instagram o WhatsApp — 24 horas al día.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Gestiona tu agenda</h3>
+        <p>Ves todas tus citas desde el móvil. Tus clientes reciben recordatorios automáticos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section center">
+  <div>
+    <div class="section-tag">Funcionalidades</div>
+    <h2 class="section-title">Todo lo que necesitas.<br>Nada que no uses.</h2>
+    <p class="section-sub">Diseñado específicamente para peluquerías y barberías. Sin configuraciones complicadas.</p>
+    <div class="features-grid fade-up">
+      <div class="feature-card">
+        <div class="feature-icon">01</div>
+        <h3>Reservas online 24/7</h3>
+        <p>Tus clientes reservan cuando quieren, aunque estés trabajando o durmiendo. Sin llamadas, sin WhatsApp.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">02</div>
+        <h3>Tu página personalizada</h3>
+        <p>barberiamaria.citafacil.es — o en tu propio dominio. Diseño profesional listo en minutos.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">03</div>
+        <h3>Recordatorios automáticos</h3>
+        <p>Email automático 24h antes de cada cita. Elimina los no-shows que te cuestan dinero.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">04</div>
+        <h3>Dashboard completo</h3>
+        <p>Citas del día, ingresos de la semana, clientes habituales — todo en una sola pantalla.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">05</div>
+        <h3>Gestión de bloqueos</h3>
+        <p>Vacaciones, festivos, horas libres. Bloquea los días que quieras y el sistema se ajusta solo.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">06</div>
+        <h3>Historial de clientes</h3>
+        <p>Quién viene más, qué servicios piden, notas personales. Conoce mejor a tu clientela.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section center" id="precios">
+  <div>
+    <div class="section-tag">Precios</div>
+    <h2 class="section-title">Sin sorpresas.<br>Todo incluido.</h2>
+    <p class="section-sub">30 días de prueba gratis. Sin tarjeta de crédito. Cancela cuando quieras.</p>
+    <div class="pricing-grid fade-up">
+      <div class="plan-card">
+        <div class="plan-name">Básico</div>
+        <div class="plan-price">29€<span>/mes</span></div>
+        <div class="plan-desc">Perfecto para empezar</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li>1 trabajador</li>
+          <li>Página de reservas personalizada</li>
+          <li>Agenda digital</li>
+          <li>Gestión de servicios y horarios</li>
+          <li>Recordatorios por email</li>
+          <li>Soporte por chat</li>
+        </ul>
+        <a href="#" class="btn-plan outline">Empezar gratis</a>
+      </div>
+      <div class="plan-card popular">
+        <div class="plan-badge">Más popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">59€<span>/mes</span></div>
+        <div class="plan-desc">Para negocios que crecen</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li>Hasta 5 trabajadores</li>
+          <li>Todo del plan Básico</li>
+          <li>Tu propio dominio</li>
+          <li>Estadísticas e informes</li>
+          <li>Gestión avanzada de clientes</li>
+          <li>Recordatorios por WhatsApp</li>
+          <li>Soporte prioritario</li>
+        </ul>
+        <a href="#" class="btn-plan indigo">Empezar gratis</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="cta-banner fade-up">
+    <h2>¿Listo para llenar tu agenda?</h2>
+    <p>Pon a prueba CitaFácil 30 días totalmente gratis. Sin tarjeta, sin complicaciones.
+    <br>La primera reserva online te sorprenderá.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="reservar.html" class="btn-lg outline">Ver demo de reserva</a>
+      <a href="panel.html" class="btn-lg primary">Ver mi panel</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">Cita<span style="color:var(--indigo)">Fácil</span></div>
+  <p>&copy; 2025 CitaFacil &middot; Hecho en Espana</p>
+  <div>
+    <a href="#">Privacidad</a>
+    <a href="#">Contacto</a>
+    <a href="reservar.html">Demo</a>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})
+},{threshold:.15})
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el))
+</script>
+</body>
+</html>

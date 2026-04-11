@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barberia El Maestro | Calle Mayor 15, Madrid</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--gold:#D4AF37;--gold-light:#E8C547;--border:rgba(212,175,55,0.12);--white:#f5f0e8;--muted:#8a8478;--text:#f5f0e8;--text-soft:#b0a898}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all .3s}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--white);letter-spacing:.02em}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--text-soft);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:.25s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{padding:.6rem 1.75rem;border:1px solid var(--gold);color:var(--gold);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:.25s;cursor:pointer;background:transparent}
+.nav-cta:hover{background:var(--gold);color:var(--bg)}
+.menu-btn{display:none;background:none;border:none;color:var(--white);font-size:1.5rem;cursor:pointer}
+
+.hero{height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('img-barber-cut.jpg') center/cover no-repeat}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,0.75) 0%,rgba(10,10,10,0.5) 40%,rgba(10,10,10,0.3) 70%,rgba(10,10,10,0.2) 100%)}
+.hero-content{position:relative;padding:0 4rem 5rem;max-width:700px}
+.hero-tag{font-size:.7rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--gold)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:700;line-height:1.05;margin-bottom:1.25rem}
+.hero-desc{font-size:.95rem;color:var(--text-soft);line-height:1.7;margin-bottom:2.5rem;max-width:480px}
+.hero-ctas{display:flex;gap:1.25rem}
+.btn-gold{padding:.875rem 2.5rem;background:var(--gold);color:var(--bg);font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:.3s;text-decoration:none}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,165,90,0.25)}
+.btn-outline{padding:.875rem 2.5rem;border:1px solid rgba(245,240,232,0.25);background:transparent;color:var(--white);font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:.3s;text-decoration:none}
+.btn-outline:hover{border-color:var(--white)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--muted);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase}
+.hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollP 2s infinite}
+@keyframes scrollP{0%,100%{opacity:.3}50%{opacity:1}}
+
+.divider{display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:3rem 2rem}
+.divider-line{width:60px;height:1px;background:var(--gold)}
+.divider-icon{font-size:.75rem;color:var(--gold);letter-spacing:.3em;font-weight:300}
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,0.97);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mobile-menu.active{display:flex}
+.mobile-menu a{color:var(--text-soft);text-decoration:none;font-size:1.1rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:.25s}
+.mobile-menu a:hover{color:var(--gold)}
+.mobile-menu-close{position:absolute;top:1.25rem;right:1.5rem;background:none;border:none;color:var(--white);font-size:1.5rem;cursor:pointer}
+@media(min-width:769px){.mobile-menu{display:none!important}}
+
+.about{padding:5rem 4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto}
+.about-images{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.about-img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:grayscale(20%) contrast(1.05)}
+.about-img:first-child{border-top:3px solid var(--gold)}
+.about-img:last-child{margin-top:2rem;border-bottom:3px solid var(--gold)}
+.stag{font-size:.7rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.stag::before{content:'';width:24px;height:1px;background:var(--gold)}
+.about-text h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;margin-bottom:1.5rem;line-height:1.1}
+.about-text p{font-size:.9rem;color:var(--text-soft);line-height:1.8;margin-bottom:1.25rem}
+.about-stats{display:flex;gap:2.5rem;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+.as-val{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--gold)}
+.as-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
+
+.services-section{padding:5rem 4rem;max-width:1100px;margin:0 auto}
+.stag-center{display:flex;justify-content:center;align-items:center;gap:.75rem;font-size:.7rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.stag-center::before,.stag-center::after{content:'';width:24px;height:1px;background:var(--gold)}
+.services-section h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;text-align:center;margin-bottom:1rem}
+.services-section .sub{text-align:center;color:var(--text-soft);font-size:.9rem;margin-bottom:3rem}
+.si{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:.2s}
+.si:hover{padding-left:.75rem}
+.si:first-child{border-top:1px solid var(--border)}
+.si-left{display:flex;align-items:center;gap:1.25rem}
+.si-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:rgba(200,165,90,0.3);width:32px}
+.si-name{font-size:1rem;font-weight:600;letter-spacing:.02em}
+.si-dur{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+.si-arrow{color:var(--gold);font-size:1.25rem;opacity:0;transition:.25s;transform:translateX(-8px)}
+.si:hover .si-arrow{opacity:1;transform:translateX(0)}
+
+.gallery-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.gallery-strip img{width:100%;height:280px;object-fit:cover;filter:grayscale(30%) contrast(1.05);transition:.4s}
+.gallery-strip img:hover{filter:grayscale(0%)}
+
+.booking-section{padding:5rem 2rem;max-width:720px;margin:0 auto}
+.booking-section h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;text-align:center;margin-bottom:.75rem}
+.booking-section .sub{text-align:center;color:var(--text-soft);font-size:.9rem;margin-bottom:3rem}
+.progress{display:flex;align-items:center;justify-content:center;margin-bottom:3rem}
+.pstep{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.pstep:not(:last-child)::after{content:'';position:absolute;top:15px;left:calc(50% + 15px);right:calc(-50% + 15px);height:1px;background:rgba(200,165,90,0.15)}
+.pstep.done:not(:last-child)::after{background:var(--gold)}
+.pdot{width:30px;height:30px;border-radius:50%;border:1px solid rgba(200,165,90,0.25);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--muted);position:relative;z-index:1;transition:.3s;background:var(--bg)}
+.pstep.active .pdot,.pstep.done .pdot{border-color:var(--gold);background:var(--gold);color:var(--bg)}
+.plabel{font-size:.58rem;font-weight:600;color:var(--muted);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
+.pstep.active .plabel{color:var(--gold)}
+
+.sp{display:none;animation:fadeUp .35s ease}.sp.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.sp-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem;text-align:center}
+
+.svc-grid{display:grid;gap:.75rem}
+.svc-card{background:var(--surface);border:1px solid var(--border);padding:1.125rem 1.375rem;cursor:pointer;transition:.25s;display:flex;align-items:center;justify-content:space-between}
+.svc-card:hover,.svc-card.selected{border-color:var(--gold)}
+.svc-card.selected{background:rgba(200,165,90,0.05)}
+.svc-left2{display:flex;align-items:center;gap:1rem}
+.svc-icon{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.75rem;font-weight:700;color:var(--gold);letter-spacing:.05em}
+.svc-name{font-size:.85rem;font-weight:600;letter-spacing:.02em}
+.svc-time{font-size:.7rem;color:var(--muted);margin-top:.1rem}
+.svc-chk{width:16px;height:16px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:transparent;transition:.2s}
+.svc-card.selected .svc-chk{border-color:var(--gold);background:var(--gold);color:var(--bg)}
+
+.cal{background:var(--surface);border:1px solid var(--border);overflow:hidden}
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
+.cal-hdr h3{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700}
+.cal-btn{width:30px;height:30px;border:1px solid var(--border);background:transparent;color:var(--text-soft);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.cal-btn:hover{border-color:var(--gold);color:var(--gold)}
+.cal-grid{padding:1rem}
+.cal-dh{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:.5rem}
+.cal-dh span{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:.2rem}
+.cd{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:500;cursor:pointer;transition:.2s;position:relative}
+.cd:hover:not(.dis):not(.emp){background:rgba(200,165,90,0.08)}
+.cd.dis{color:rgba(255,255,255,0.12);cursor:not-allowed}.cd.emp{visibility:hidden}
+.cd.today{color:var(--gold);font-weight:800}
+.cd.sel{background:var(--gold);color:var(--bg);font-weight:800}
+.cd.avl::after{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold);position:absolute;bottom:2px;left:50%;transform:translateX(-50%)}
+
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.sl{padding:.65rem;border:1px solid var(--border);text-align:center;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;background:var(--surface);letter-spacing:.03em}
+.sl:hover:not(.tk){border-color:var(--gold);color:var(--gold)}
+.sl.sel{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.sl.tk{color:rgba(255,255,255,0.1);cursor:not-allowed;text-decoration:line-through;font-weight:400;background:transparent}
+
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.72rem;font-weight:600;margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+input,textarea{width:100%;border:1px solid var(--border);padding:.7rem 1rem;font-family:inherit;font-size:.85rem;color:var(--text);background:var(--surface);transition:.2s}
+textarea{resize:vertical;min-height:72px}
+input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,165,90,0.08)}
+.hint{font-size:.65rem;color:var(--muted);margin-top:.25rem}
+.cbox{display:flex;align-items:flex-start;gap:.7rem;padding:.875rem;background:var(--surface);border:1px solid var(--border);margin-top:1rem}
+.cbox input{width:auto;min-width:14px;height:14px;padding:0;accent-color:var(--gold);margin-top:2px}
+.cbox p{font-size:.7rem;color:var(--muted);line-height:1.6}
+
+.sum-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:1.25rem}
+.sum-hdr{background:var(--surface2);padding:1rem 1.375rem;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;border-bottom:1px solid var(--border)}
+.sum-row{display:flex;justify-content:space-between;padding:.7rem 1.375rem;border-bottom:1px solid var(--border)}
+.sum-row:last-child{border-bottom:none}
+.sum-k{font-size:.72rem;color:var(--muted)}.sum-v{font-size:.85rem;font-weight:600}
+
+.conf{text-align:center;padding:3rem 1rem}
+.conf-icon{width:68px;height:68px;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.75rem;border-radius:50%;margin:0 auto 1.5rem;animation:popIn .5s ease}
+@keyframes popIn{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.conf h2{font-family:'Cormorant Garamond',serif;font-size:1.75rem;margin-bottom:.7rem}
+.conf>p{color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 1.75rem;font-size:.88rem}
+.conf-detail{background:var(--surface);border:1px solid var(--border);padding:1.125rem;margin-bottom:1.25rem;text-align:left}
+.conf-r{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.82rem}
+.conf-r:not(:last-child){border-bottom:1px solid var(--border)}
+.conf-rk{color:var(--muted)}.conf-rv{font-weight:700}
+.email-note{font-size:.7rem;color:var(--muted);background:rgba(200,165,90,0.05);border:1px solid var(--border);padding:.7rem .9rem;margin-bottom:1.25rem}
+
+.btn-wrap{display:flex;justify-content:space-between;margin-top:2.25rem;gap:1rem}
+.bbk{padding:.75rem 1.75rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:.25s;border:none}
+.bbk-back{background:transparent;color:var(--muted);border:1px solid var(--border)}.bbk-back:hover{border-color:var(--text-soft);color:var(--text-soft)}
+.bbk-next{background:var(--gold);color:var(--bg);flex:1}.bbk-next:hover{background:var(--gold-light);transform:translateY(-1px)}
+.bbk-next:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;transform:none}
+.btn-home{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.75rem 1.75rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-block;cursor:pointer;transition:.25s}
+.btn-home:hover{background:var(--gold);color:var(--bg)}
+
+.contact{padding:5rem 4rem;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.contact-info h2{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:2rem}
+.cr{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.cr-icon{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--gold);flex-shrink:0}
+.cr h4{font-size:.85rem;font-weight:600;margin-bottom:.2rem}
+.cr p{font-size:.8rem;color:var(--muted);line-height:1.5}
+.contact-map{background:var(--surface);border:1px solid var(--border);height:100%;min-height:300px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem}
+
+footer{padding:2.5rem 4rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+footer p{font-size:.72rem;color:var(--muted)}
+.footer-links a{font-size:.72rem;color:var(--muted);text-decoration:none;margin-left:1.5rem;transition:.2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}.nav-links{display:none}.menu-btn{display:block}
+  .hero-content{padding:0 2rem 4rem}
+  .about{grid-template-columns:1fr;padding:3rem 2rem}
+  .services-section,.booking-section{padding:3rem 1.5rem}
+  .contact{grid-template-columns:1fr;padding:3rem 2rem}
+  .slots{grid-template-columns:repeat(3,1fr)}
+  .gallery-strip{grid-template-columns:1fr}.gallery-strip img{height:200px}
+  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">El <span>Maestro</span></div>
+  <ul class="nav-links">
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#reservar">Reservar</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="#reservar" class="nav-cta">Reservar cita</a>
+  <button class="menu-btn" onclick="document.getElementById('mobileMenu').classList.add('active')">|||</button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" onclick="document.getElementById('mobileMenu').classList.remove('active')">&times;</button>
+  <a href="#nosotros" onclick="document.getElementById('mobileMenu').classList.remove('active')">Nosotros</a>
+  <a href="#servicios" onclick="document.getElementById('mobileMenu').classList.remove('active')">Servicios</a>
+  <a href="#reservar" onclick="document.getElementById('mobileMenu').classList.remove('active')">Reservar</a>
+  <a href="#contacto" onclick="document.getElementById('mobileMenu').classList.remove('active')">Contacto</a>
+</div>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Desde 1998 en Madrid</div>
+    <h1>Barberia de verdad</h1>
+    <p class="hero-desc">Esas que heredan tecnica de padre a hijo. Donde cada corte es un dialogo entre profesional y cliente. Eso es El Maestro.</p>
+    <div class="hero-ctas">
+      <a href="#reservar" class="btn-gold">Reservar cita</a>
+      <a href="#servicios" class="btn-outline">Nuestros servicios</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-line"></div></div>
+</section>
+
+<div class="divider"><div class="divider-line"></div><div class="divider-icon">/ / /</div><div class="divider-line"></div></div>
+
+<section class="about" id="nosotros">
+  <div class="about-images">
+    <img src="img-barber-street.jpg" alt="Barberia El Maestro" class="about-img">
+    <img src="img-barber-pole.jpg" alt="Poste clasico" class="about-img">
+  </div>
+  <div class="about-text">
+    <div class="stag">Nuestra historia</div>
+    <h2>Treinta anos sin cambiar lo importante</h2>
+    <p>Barberia abierta desde 1998. Hemos visto modas ir y venir, pero nosotros seguimos aqui haciendo lo de siempre: cortes que duran, barbas que imponen, y atencion que se nota.</p>
+    <div class="about-stats">
+      <div><div class="as-val">25+</div><div class="as-label">Anios</div></div>
+      <div><div class="as-val">4.9</div><div class="as-label">Valoracion</div></div>
+      <div><div class="as-val">127</div><div class="as-label">Resenas</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-line"></div><div class="divider-icon">/ / /</div><div class="divider-line"></div></div>
+
+<section class="services-section" id="servicios">
+  <div class="stag-center">Nuestros servicios</div>
+  <h2>Cinco servicios. Treinta anos de tecnica.</h2>
+  <p class="sub">Lavado, asesoramiento y productos premium incluidos en cada servicio</p>
+  <div>
+    <div class="si" onclick="scrollToBooking('Corte clasico','30')"><div class="si-left"><span class="si-num">01</span><div><div class="si-name">Corte clasico</div><div class="si-dur">30 min · La estructura que te define</div></div></div><span class="si-arrow">→</span></div>
+    <div class="si" onclick="scrollToBooking('Perfilado de barba','20')"><div class="si-left"><span class="si-num">02</span><div><div class="si-name">Perfilado de barba</div><div class="si-dur">20 min · Diseno que habla por ti</div></div></div><span class="si-arrow">→</span></div>
+    <div class="si" onclick="scrollToBooking('Corte + Barba','45')"><div class="si-left"><span class="si-num">03</span><div><div class="si-name">Corte + Barba</div><div class="si-dur">45 min · La experiencia barberia completa</div></div></div><span class="si-arrow">→</span></div>
+    <div class="si" onclick="scrollToBooking('Tratamiento capilar','60')"><div class="si-left"><span class="si-num">04</span><div><div class="si-name">Tratamiento capilar</div><div class="si-dur">60 min · Restauracion y cuidado</div></div></div><span class="si-arrow">→</span></div>
+    <div class="si" onclick="scrollToBooking('Afeitado artesanal','35')"><div class="si-left"><span class="si-num">05</span><div><div class="si-name">Afeitado artesanal</div><div class="si-dur">35 min · Navaja, tecnica y ritual</div></div></div><span class="si-arrow">→</span></div>
+  </div>
+</section>
+
+<div class="gallery-strip">
+  <img src="img-barber-cut.jpg" alt="Corte de barba">
+  <img src="img-barber-pole.jpg" alt="Poste de barbero">
+  <img src="img-barber-street.jpg" alt="Exterior barberia">
+</div>
+
+<section class="booking-section" id="reservar">
+  <div class="stag-center">Reserva online</div>
+  <h2>Reserva tu cita</h2>
+  <p class="sub">Elige servicio, fecha y hora. Te confirmamos al instante.</p>
+  <div class="progress">
+    <div class="pstep active" id="ps1"><div class="pdot">1</div><div class="plabel">Servicio</div></div>
+    <div class="pstep" id="ps2"><div class="pdot">2</div><div class="plabel">Fecha</div></div>
+    <div class="pstep" id="ps3"><div class="pdot">3</div><div class="plabel">Hora</div></div>
+    <div class="pstep" id="ps4"><div class="pdot">4</div><div class="plabel">Datos</div></div>
+    <div class="pstep" id="ps5"><div class="pdot">&check;</div><div class="plabel">Listo</div></div>
+  </div>
+
+  <div class="sp active" id="s1">
+    <div class="sp-sub">Que necesita tu barba hoy</div>
+    <div class="svc-grid">
+      <div class="svc-card" onclick="pickSvc(this,'Corte clasico','30')"><div class="svc-left2"><div class="svc-icon">01</div><div><div class="svc-name">Corte clasico</div><div class="svc-time">30 min</div></div></div><div class="svc-chk">&check;</div></div>
+      <div class="svc-card" onclick="pickSvc(this,'Perfilado de barba','20')"><div class="svc-left2"><div class="svc-icon">02</div><div><div class="svc-name">Perfilado de barba</div><div class="svc-time">20 min</div></div></div><div class="svc-chk">&check;</div></div>
+      <div class="svc-card" onclick="pickSvc(this,'Corte + Barba','45')"><div class="svc-left2"><div class="svc-icon">03</div><div><div class="svc-name">Corte + Barba</div><div class="svc-time">45 min</div></div></div><div class="svc-chk">&check;</div></div>
+      <div class="svc-card" onclick="pickSvc(this,'Tratamiento capilar','60')"><div class="svc-left2"><div class="svc-icon">04</div><div><div class="svc-name">Tratamiento capilar</div><div class="svc-time">60 min</div></div></div><div class="svc-chk">&check;</div></div>
+      <div class="svc-card" onclick="pickSvc(this,'Afeitado artesanal','35')"><div class="svc-left2"><div class="svc-icon">05</div><div><div class="svc-name">Afeitado artesanal</div><div class="svc-time">35 min &middot; Navaja y ritual</div></div></div><div class="svc-chk">&check;</div></div>
+    </div>
+    <div class="btn-wrap"><div></div><button class="bbk bbk-next" onclick="go(2)" id="b1" disabled>Siguiente</button></div>
+  </div>
+
+  <div class="sp" id="s2">
+    <div class="sp-sub">Cuando te vienes</div>
+    <div class="cal">
+      <div class="cal-hdr"><button class="cal-btn" onclick="chMo(-1)">‹</button><h3 id="cT"></h3><button class="cal-btn" onclick="chMo(1)">›</button></div>
+      <div class="cal-grid"><div class="cal-dh"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="cal-days" id="cD"></div></div>
+    </div>
+    <div class="btn-wrap"><button class="bbk bbk-back" onclick="go(1)">Atras</button><button class="bbk bbk-next" onclick="go(3)" id="b2" disabled>Siguiente</button></div>
+  </div>
+
+  <div class="sp" id="s3">
+    <div class="sp-sub" id="sH">Elige tu hora</div>
+    <div class="slots" id="sG"></div>
+    <div class="btn-wrap"><button class="bbk bbk-back" onclick="go(2)">Atras</button><button class="bbk bbk-next" onclick="go(4)" id="b3" disabled>Siguiente</button></div>
+  </div>
+
+  <div class="sp" id="s4">
+    <div class="sp-sub">Como contactarte</div>
+    <div class="fg"><label>Nombre completo</label><input type="text" id="fn" placeholder="Tu nombre" oninput="chk()"></div>
+    <div class="fg"><label>Telefono</label><input type="tel" id="fp" placeholder="+34 600 000 000" oninput="chk()"><p class="hint">Confirmacion por WhatsApp</p></div>
+    <div class="fg"><label>Email (opcional)</label><input type="email" id="fe" placeholder="tu@email.com"><p class="hint">Para recordatorios automaticos</p></div>
+    <div class="fg"><label>Notas (opcional)</label><textarea id="fno" placeholder="Preferencias, tipo de corte..."></textarea></div>
+    <div class="cbox"><input type="checkbox" id="fr" onchange="chk()"><p>Acepto que Barberia El Maestro guarde mis datos para gestionar mi cita segun el RGPD.</p></div>
+    <div class="btn-wrap"><button class="bbk bbk-back" onclick="go(3)">Atras</button><button class="bbk bbk-next" onclick="go(5)" id="b4" disabled>Revisar cita</button></div>
+  </div>
+
+  <div class="sp" id="s5">
+    <div class="sum-card">
+      <div class="sum-hdr">Resumen de tu reserva</div>
+      <div class="sum-row"><span class="sum-k">Servicio</span><span class="sum-v" id="rS">-</span></div>
+      <div class="sum-row"><span class="sum-k">Fecha</span><span class="sum-v" id="rD">-</span></div>
+      <div class="sum-row"><span class="sum-k">Hora</span><span class="sum-v" id="rT">-</span></div>
+      <div class="sum-row"><span class="sum-k">Duracion</span><span class="sum-v" id="rDu">-</span></div>
+      <div class="sum-row"><span class="sum-k">Nombre</span><span class="sum-v" id="rN">-</span></div>
+    </div>
+    <div class="email-note">Recibiras confirmacion y recordatorio 24h antes de tu cita.</div>
+    <div class="btn-wrap"><button class="bbk bbk-back" onclick="go(4)">Modificar</button><button class="bbk bbk-next" onclick="cfm()">Confirmar cita</button></div>
+  </div>
+
+  <div class="sp" id="s6">
+    <div class="conf">
+      <div class="conf-icon">&check;</div>
+      <h2>Cita confirmada</h2>
+      <p>Te esperamos. Sube por Calle Mayor, parking gratuito en el numero 18. Cualquier duda: +34 910 123 456.</p>
+      <div class="conf-detail">
+        <div class="conf-r"><span class="conf-rk">Servicio</span><span class="conf-rv" id="cS">-</span></div>
+        <div class="conf-r"><span class="conf-rk">Fecha y hora</span><span class="conf-rv" id="cDT">-</span></div>
+        <div class="conf-r"><span class="conf-rk">Duracion</span><span class="conf-rv" id="cDu">-</span></div>
+      </div>
+      <div class="email-note">Confirmacion enviada. Te recordaremos 24h antes.</div>
+      <a href="#" class="btn-home" onclick="event.preventDefault();document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">Volver al inicio</a>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contacto">
+  <div class="contact-info">
+    <h2>Donde encontrarnos</h2>
+    <div class="cr"><div class="cr-icon">&bull;</div><div><h4>Direccion</h4><p>Calle Mayor 15, 28013 Madrid</p></div></div>
+    <div class="cr"><div class="cr-icon">&bull;</div><div><h4>Horario</h4><p>Lun-Vie: 9:00-19:00<br>Sab: 9:00-14:00<br>Dom: Cerrado</p></div></div>
+    <div class="cr"><div class="cr-icon">&bull;</div><div><h4>Telefono</h4><p>+34 910 123 456</p></div></div>
+    <div class="cr"><div class="cr-icon">&bull;</div><div><h4>Email</h4><p>hola@barberiaelmaestro.es</p></div></div>
+  </div>
+  <div class="contact-map"><div style="text-align:center;padding:2rem"><p style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:1rem;color:var(--gold)">Mapa</p><p>Calle Mayor 15<br>28013 Madrid</p><p style="margin-top:1rem;font-size:.75rem;color:var(--gold)">Metro: Sol (L1, L2, L3)</p></div></div>
+</section>
+
+<footer>
+  <div class="nav-logo" style="font-size:1.2rem">El <span style="color:var(--gold)">Maestro</span></div>
+  <p>© 2025 Barberia El Maestro · Madrid</p>
+  <div class="footer-links"><a href="#">Instagram</a><a href="#">WhatsApp</a><a href="index.html">Powered by CitaFacil</a></div>
+</footer>
+
+<script>
+var S={svc:'',dur:'',date:'',dl:'',time:''};
+var cY=new Date().getFullYear(),cM=new Date().getMonth();
+var MO=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var mol=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var dol=['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
+var tkD=[3,8,12,17,22],tkS=['10:30','12:00','15:30','17:00'];
+
+function scrollToBooking(n,d){S.svc=n;S.dur=d;document.querySelectorAll('.svc-card').forEach(function(c){c.classList.remove('selected');if(c.querySelector('.svc-name').textContent===n)c.classList.add('selected')});document.getElementById('b1').disabled=false;document.getElementById('reservar').scrollIntoView({behavior:'smooth'})}
+function pickSvc(el,n,d){document.querySelectorAll('.svc-card').forEach(function(c){c.classList.remove('selected')});el.classList.add('selected');S.svc=n;S.dur=d;document.getElementById('b1').disabled=false}
+function go(n){document.querySelectorAll('.sp').forEach(function(p){p.classList.remove('active')});document.getElementById('s'+n).classList.add('active');for(var i=1;i<=5;i++){var p=document.getElementById('ps'+i);p.classList.remove('active','done');if(i<n)p.classList.add('done');else if(i===n)p.classList.add('active')}if(n===2)rCal();if(n===3)rSlots();if(n===5)rSum();document.getElementById('reservar').scrollIntoView({behavior:'smooth'})}
+function rCal(){document.getElementById('cT').textContent=MO[cM]+' '+cY;var g=document.getElementById('cD');g.innerHTML='';var f=new Date(cY,cM,1).getDay(),o=(f===0)?6:f-1;var ds=new Date(cY,cM+1,0).getDate(),t=new Date();for(var i=0;i<o;i++){var d=document.createElement('div');d.className='cd emp';g.appendChild(d)}for(var d=1;d<=ds;d++){var el=document.createElement('div');el.className='cd';el.textContent=d;var td=new Date(cY,cM,d);var ip=td<new Date(t.getFullYear(),t.getMonth(),t.getDate());var su=td.getDay()===0;if(ip||su)el.classList.add('dis');else{if(!tkD.includes(d))el.classList.add('avl');el.onclick=(function(e,dd){return function(){pickDate(e,dd)}})(el,d)}if(d===t.getDate()&&cM===t.getMonth()&&cY===t.getFullYear())el.classList.add('today');g.appendChild(el)}}
+function chMo(dir){cM+=dir;if(cM>11){cM=0;cY++}if(cM<0){cM=11;cY--}rCal()}
+function pickDate(el,d){document.querySelectorAll('.cd').forEach(function(c){c.classList.remove('sel')});el.classList.add('sel');var dt=new Date(cY,cM,d);S.date=cY+'-'+String(cM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');S.dl=dol[dt.getDay()]+' '+d+' de '+mol[cM]+' de '+cY;document.getElementById('b2').disabled=false;document.getElementById('sH').textContent='Horarios para el '+S.dl}
+function rSlots(){var g=document.getElementById('sG');g.innerHTML='';var ts=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','16:00','16:30','17:00','17:30','18:00','18:30'];ts.forEach(function(t){var el=document.createElement('div');el.textContent=t;if(tkS.includes(t))el.className='sl tk';else{el.className='sl';el.onclick=function(){pickSlot(el,t)}}g.appendChild(el)})}
+function pickSlot(el,t){document.querySelectorAll('.sl').forEach(function(s){s.classList.remove('sel')});el.classList.add('sel');S.time=t;document.getElementById('b3').disabled=false}
+function chk(){var fn=document.getElementById('fn').value.trim();var fp=document.getElementById('fp').value.trim();var fr=document.getElementById('fr').checked;var phoneOk=fp.replace(/\D/g,'').length>=9;var ok=fn&&phoneOk&&fr;document.getElementById('b4').disabled=!ok}
+function rSum(){document.getElementById('rS').textContent=S.svc;document.getElementById('rD').textContent=S.dl;document.getElementById('rT').textContent=S.time;document.getElementById('rDu').textContent=S.dur+' minutos';document.getElementById('rN').textContent=document.getElementById('fn').value}
+function cfm(){document.getElementById('cS').textContent=S.svc;document.getElementById('cDT').textContent=S.dl+' a las '+S.time;document.getElementById('cDu').textContent=S.dur+' minutos';go(6)}
+rCal();
+</script>
+</body>
+</html>
