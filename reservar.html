@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barberia El Maestro | Calle Mayor 15, Madrid</title>
+<title>Barbería El Maestro | Calle Mayor 15, Madrid</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -22,7 +22,7 @@ nav{position:fixed;top:32px;left:0;right:0;z-index:100;padding:1.25rem 3rem;disp
 .menu-btn{display:none;background:none;border:none;color:var(--white);font-size:1.5rem;cursor:pointer}
 
 .hero{height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:url('img-barber-cut.jpg') center/cover no-repeat}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1622286342621-4bd786c2447c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,0.75) 0%,rgba(10,10,10,0.5) 40%,rgba(10,10,10,0.3) 70%,rgba(10,10,10,0.2) 100%)}
 .hero-content{position:relative;padding:0 4rem 5rem;max-width:700px}
 .hero-tag{font-size:.7rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
@@ -357,13 +357,12 @@ footer p{font-size:.72rem;color:var(--muted)}
 </section>
 
 <footer>
-  <div class="nav-logo" style="font-size:1.2rem">El <span style="color:var(--gold)">Maestro</span></div>
-  <p>© 2025 Barberia El Maestro · Madrid</p>
+  <p>© 2026 Barbería El Maestro · Madrid</p>
   <div class="footer-links"><a href="#">Instagram</a><a href="#">WhatsApp</a><a href="index.html">Powered by Isolvia</a></div>
 </footer>
 
 <script>
-var S={svc:'',dur:'',date:'',dl:'',time:''};
+var S={svc:'',dur:'',date:'',dl:'',time:'',dayOfWeek:null};
 var cY=new Date().getFullYear(),cM=new Date().getMonth();
 var MO=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 var mol=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -375,8 +374,12 @@ function pickSvc(el,n,d){document.querySelectorAll('.svc-card').forEach(function
 function go(n){document.querySelectorAll('.sp').forEach(function(p){p.classList.remove('active')});document.getElementById('s'+n).classList.add('active');for(var i=1;i<=5;i++){var p=document.getElementById('ps'+i);p.classList.remove('active','done');if(i<n)p.classList.add('done');else if(i===n)p.classList.add('active')}if(n===2)rCal();if(n===3)rSlots();if(n===5)rSum();document.getElementById('reservar').scrollIntoView({behavior:'smooth'})}
 function rCal(){document.getElementById('cT').textContent=MO[cM]+' '+cY;var g=document.getElementById('cD');g.innerHTML='';var f=new Date(cY,cM,1).getDay(),o=(f===0)?6:f-1;var ds=new Date(cY,cM+1,0).getDate(),t=new Date();for(var i=0;i<o;i++){var d=document.createElement('div');d.className='cd emp';g.appendChild(d)}for(var d=1;d<=ds;d++){var el=document.createElement('div');el.className='cd';el.textContent=d;var td=new Date(cY,cM,d);var ip=td<new Date(t.getFullYear(),t.getMonth(),t.getDate());var su=td.getDay()===0;if(ip||su)el.classList.add('dis');else{if(!tkD.includes(d))el.classList.add('avl');el.onclick=(function(e,dd){return function(){pickDate(e,dd)}})(el,d)}if(d===t.getDate()&&cM===t.getMonth()&&cY===t.getFullYear())el.classList.add('today');g.appendChild(el)}}
 function chMo(dir){cM+=dir;if(cM>11){cM=0;cY++}if(cM<0){cM=11;cY--}rCal()}
-function pickDate(el,d){document.querySelectorAll('.cd').forEach(function(c){c.classList.remove('sel')});el.classList.add('sel');var dt=new Date(cY,cM,d);S.date=cY+'-'+String(cM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');S.dl=dol[dt.getDay()]+' '+d+' de '+mol[cM]+' de '+cY;document.getElementById('b2').disabled=false;document.getElementById('sH').textContent='Horarios para el '+S.dl}
-function rSlots(){var g=document.getElementById('sG');g.innerHTML='';var ts=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','16:00','16:30','17:00','17:30','18:00','18:30'];ts.forEach(function(t){var el=document.createElement('div');el.textContent=t;if(tkS.includes(t))el.className='sl tk';else{el.className='sl';el.onclick=function(){pickSlot(el,t)}}g.appendChild(el)})}
+function pickDate(el,d){document.querySelectorAll('.cd').forEach(function(c){c.classList.remove('sel')});el.classList.add('sel');var dt=new Date(cY,cM,d);S.date=cY+'-'+String(cM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');S.dl=dol[dt.getDay()]+' '+d+' de '+mol[cM]+' de '+cY;S.dayOfWeek=dt.getDay();document.getElementById('b2').disabled=false;document.getElementById('sH').textContent='Horarios para el '+S.dl}
+function rSlots(){var g=document.getElementById('sG');g.innerHTML='';var ts=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','16:00','16:30','17:00','17:30','18:00','18:30'];
+  if(S.dayOfWeek===6){
+    ts=ts.filter(function(t){return t<='14:00';});
+  }
+  ts.forEach(function(t){var el=document.createElement('div');el.textContent=t;if(tkS.includes(t))el.className='sl tk';else{el.className='sl';el.onclick=function(){pickSlot(el,t)}}g.appendChild(el)})}
 function pickSlot(el,t){document.querySelectorAll('.sl').forEach(function(s){s.classList.remove('sel')});el.classList.add('sel');S.time=t;document.getElementById('b3').disabled=false}
 function chk(){var fn=document.getElementById('fn').value.trim();var fp=document.getElementById('fp').value.trim();var fr=document.getElementById('fr').checked;var phoneOk=fp.replace(/\D/g,'').length>=9;var ok=fn&&phoneOk&&fr;document.getElementById('b4').disabled=!ok}
 function rSum(){document.getElementById('rS').textContent=S.svc;document.getElementById('rD').textContent=S.dl;document.getElementById('rT').textContent=S.time;document.getElementById('rDu').textContent=S.dur+' minutos';document.getElementById('rN').textContent=document.getElementById('fn').value}
