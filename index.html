@@ -387,7 +387,8 @@
     /* REAL PANEL MOCKUP (RAW UI) */
     .raw-panel-sec {
       padding: 8rem 2rem;
-      background: #EFEDE8; /* Charcoal cálido muy suave */
+      background: #EFEDE8;
+      /* Charcoal cálido muy suave */
       color: var(--charcoal);
       overflow: hidden;
       position: relative;
@@ -710,6 +711,9 @@
       color: var(--charcoal-soft);
     }
 
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — TABLET (≤ 900px)
+       ═══════════════════════════════════════════ */
     @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
@@ -717,13 +721,13 @@
       }
 
       .hero-image {
-        height: 400px;
+        height: 350px;
         border-left: none;
         border-top: 1px solid var(--border);
       }
 
       .hero-content {
-        padding: 4rem 2rem;
+        padding: 6rem 2.5rem 3rem;
       }
 
       .nav-links {
@@ -734,9 +738,34 @@
         padding: 1.25rem 2rem;
       }
 
+      /* — Raw UI Panel — */
+      .raw-panel-sec {
+        padding: 5rem 1.25rem;
+      }
+
+      .raw-ui {
+        padding: 2rem;
+      }
+
       .rui-cols {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 0;
+      }
+
+      /* Sidebar pasa debajo como cards */
+      .rui-sidebar {
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid rgba(247, 245, 240, 0.08);
+        padding-top: 2rem;
+        margin-top: 2rem;
+      }
+
+      /* KPIs en fila horizontal */
+      .rui-sidebar > .rui-kpi {
+        display: inline-block;
+        width: 48%;
+        vertical-align: top;
       }
 
       .final-btns {
@@ -747,6 +776,242 @@
         flex-direction: column;
         gap: 1.5rem;
         text-align: center;
+      }
+
+      .oficio {
+        padding: 5rem 2rem;
+      }
+
+      .onboarding {
+        padding: 5rem 2rem;
+      }
+
+      .manifesto {
+        padding: 5rem 2rem;
+      }
+
+      .final-cta {
+        padding: 5rem 2rem;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — MOBILE (≤ 600px)
+       ═══════════════════════════════════════════ */
+    @media (max-width: 600px) {
+      .hero-content {
+        padding: 5.5rem 1.5rem 2.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+        line-height: 1.15;
+      }
+
+      .hero-desc {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-image {
+        height: 260px;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+
+      .hero-ctas .box {
+        text-align: center;
+        padding: 0.85rem 1.5rem;
+        font-size: 0.8rem;
+      }
+
+      /* — Manifesto — */
+      .manifesto {
+        padding: 4rem 1.5rem;
+      }
+
+      .manifesto h2 {
+        font-size: 1.5rem;
+      }
+
+      .manifesto-sub {
+        font-size: 1rem;
+      }
+
+      /* — Oficio / Features — */
+      .oficio {
+        padding: 4rem 1.5rem;
+      }
+
+      .oficio-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .oficio-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .oficio-grid {
+        gap: 2.5rem;
+      }
+
+      /* — Photo Break — */
+      .photo-break {
+        height: 35vh;
+        min-height: 250px;
+      }
+
+      /* — Raw UI Panel (mockup SaaS) — */
+      .raw-panel-sec {
+        padding: 4rem 0.75rem;
+      }
+
+      .raw-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .raw-header {
+        margin-bottom: 3rem;
+      }
+
+      .raw-ui {
+        padding: 1.25rem;
+        border-radius: 10px;
+      }
+
+      .rui-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .rui-title {
+        font-size: 1.25rem;
+      }
+
+      .rui-date {
+        font-size: 0.75rem;
+      }
+
+      /* Agenda items — layout tipo app móvil */
+      .rui-agenda-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 1rem 0.25rem;
+        align-items: center;
+      }
+
+      .rui-time {
+        width: 42px;
+        font-size: 0.8rem;
+      }
+
+      .rui-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .rui-name {
+        font-size: 0.9rem;
+        flex-wrap: wrap;
+      }
+
+      .rui-svc {
+        font-size: 0.75rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .rui-status {
+        font-size: 0.55rem;
+        padding: 0.3rem 0.6rem;
+        letter-spacing: 0.08em;
+      }
+
+      /* Sidebar KPIs — stack vertical en mobile pequeño */
+      .rui-sidebar > .rui-kpi {
+        display: block;
+        width: 100%;
+      }
+
+      .rui-kpi-val {
+        font-size: 1.8rem;
+      }
+
+      .rui-insights {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+      }
+
+      .rui-ins-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .rui-ins-val {
+        text-align: left;
+      }
+
+      /* — Onboarding — */
+      .onboarding {
+        padding: 4rem 1.5rem;
+      }
+
+      .onboarding-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .onboarding-grid {
+        gap: 2rem;
+      }
+
+      /* — Final CTA — */
+      .final-cta {
+        padding: 4rem 1.5rem;
+      }
+
+      .final-cta h2 {
+        font-size: 1.6rem;
+      }
+
+      .final-btns .box {
+        width: 100%;
+        text-align: center;
+        padding: 0.85rem 1.5rem;
+      }
+
+      /* — Footer — */
+      footer {
+        padding: 3rem 1.5rem;
+      }
+
+      /* — Demo Widget — */
+      .demo-widget {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        justify-content: center;
+        border-radius: 40px;
+        padding: 5px;
+      }
+
+      .demo-widget a {
+        font-size: 0.7rem;
+        padding: 5px 10px;
+      }
+
+      .demo-widget-label {
+        font-size: 0.6rem;
+        padding: 0 8px;
       }
     }
 
@@ -792,6 +1057,88 @@
       background: var(--bone);
       color: var(--charcoal);
     }
+
+    /* From Uiverse.io by Cornerstone-04 — Adaptado para Isolvia */
+    .box {
+      width: auto;
+      height: auto;
+      transition: .5s linear;
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      padding: 12px 28px;
+      text-align: center;
+      background: transparent;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--copper);
+      border: 2px solid var(--copper);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+      border-color: var(--copper);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+      border-color: var(--copper);
+    }
+
+    .box:hover {
+      box-shadow: 0 8px 20px rgba(194, 120, 91, 0.35);
+      color: var(--bone-light);
+      background: var(--copper);
+    }
+
+    .box:hover:before {
+      border-color: var(--copper);
+      height: 100%;
+      transform: translateX(0);
+      transition: .3s transform linear, .3s height linear .3s;
+    }
+
+    .box:hover:after {
+      border-color: var(--copper);
+      height: 100%;
+      transform: translateX(0);
+      transition: .3s transform linear, .3s height linear .5s;
+    }
+
+    a.box {
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    a.box:visited {
+      color: var(--copper);
+    }
+
+    a.box:hover:visited {
+      color: var(--bone-light);
+    }
   </style>
 </head>
 
@@ -811,11 +1158,11 @@
   <header class="hero">
     <div class="hero-content">
       <span class="hero-tag">Software de gestión para barberías</span>
-      <h1>Atiende al asiento,<br><i>no al teléfono.</i></h1>
+      <h1>Automatiza tus citas.<br><i>Llena tu peluquería cada día.</i></h1>
       <p class="hero-desc">Tus clientes reservan solos. Tú sigues cortando sin interrumpir el ritmo del día.</p>
       <div class="hero-ctas">
-        <a href="reservar.html" class="btn-primary">Ver web de cliente</a>
-        <a href="#taller" class="btn-link">Conocer el panel</a>
+        <a href="reservar.html" class="box">Ver web de cliente</a>
+        <a href="#taller" class="box">Conocer el panel</a>
       </div>
     </div>
     <div class="hero-image"></div>
@@ -828,34 +1175,34 @@
     </h2>
 
     <p class="manifesto-sub">
-      Esto hace que no tengas que hacerlo.
+      Automatiza reservas, envía recordatorios y evita cancelaciones. Todo desde un sistema diseñado para peluquerías
+      que quieren ahorrar tiempo y aumentar ingresos sin complicaciones.
     </p>
   </section>
 
   <section class="oficio" id="oficio">
     <div class="oficio-header">
-      <h2 class="serif">Así es tu día ahora.</h2>
-      <p>Lo justo para abrir, trabajar y cerrar el día con la agenda en orden. Sin menús absurdos. Sin funciones que
-        sobran.</p>
+      <h2 class="serif">Así debería ser tu día</h2>
+      <p>Agenda clara, sin distracciones. Sin funciones innecesarias. Solo control y simplicidad.</p>
     </div>
     <div class="oficio-grid">
       <div class="ficha">
         <div class="ficha-num">01.</div>
         <h3>Agenda automática</h3>
-        <p>Tu cliente entra, elige hora y reserva sin escribirte. La cita entra sola y tú no paras el servicio para
-          coger el móvil.</p>
+        <p>Tu cliente entra, elige hora y reserva sin escribirte.
+          La cita se confirma sola y tú sigues trabajando sin tocar el móvil</p>
       </div>
       <div class="ficha">
         <div class="ficha-num">02.</div>
         <h3>Sillas siempre llenas</h3>
-        <p>Enviamos recordatorios automáticos por ti. Si alguien anula la cita, el espacio vuelve a quedar libre al
-          instante para que no pierdas ningún ingreso.</p>
+        <p>Recordatorios automáticos que reducen ausencias.
+          Si alguien cancela, ese hueco vuelve a estar disponible al instante.</p>
       </div>
       <div class="ficha">
         <div class="ficha-num">03.</div>
         <h3>Las cuentas en orden</h3>
-        <p>Abres el panel y ves lo que ha pasado hoy: citas atendidas, huecos perdidos e ingresos. Sin libreta. Sin
-          sumar a ojo.</p>
+        <p>Abres el panel y ves todo al momento: citas, huecos e ingresos. Sin libreta. Sin
+          cálculos. Todo claro.</p>
       </div>
     </div>
   </section>
@@ -964,27 +1311,24 @@
   <section class="onboarding" id="onboarding">
     <div class="onboarding-header">
       <h2 class="serif">Cómo empezar.</h2>
-      <p>Sabemos que no tienes tiempo para pelearte con configuraciones técnicas. Te lo damos preparado para arrancar.
+      <p>Sabemos que no tienes tiempo. Te lo damos listo para funcionar desde el primer día.
       </p>
     </div>
     <div class="onboarding-grid">
       <div class="ob-card">
         <div class="ob-icon">1.</div>
-        <h4>Todo en su sitio</h4>
-        <p>Tendrás una web de reservas con tu nombre, un panel de dueño inteligente y recordatorios integrados. Sin
-          módulos extra ni letra pequeña.</p>
+        <h4>Todo preparado</h4>
+        <p>Web propia de reservas con tu nombre, panel de control y recordatorios automáticos.</p>
       </div>
       <div class="ob-card">
         <div class="ob-icon">2.</div>
-        <h4>Te lo montamos hoy</h4>
-        <p>Nos pasas tus precios, fotos y los horarios en un mensaje. Nosotros construimos tu agenda y tu link de forma
-          personal para ti.</p>
+        <h4>Nos encargamos por ti</h4>
+        <p>Nos pasas horarios, servicios y precios. Montamos tu agenda y tu enlace de reservas.</p>
       </div>
       <div class="ob-card">
         <div class="ob-icon">3.</div>
-        <h4>Listo para funcionar</h4>
-        <p>Una vez terminado el montaje, tu negocio estará completamente digitalizado. Listo para que publiques tu botón
-          de reserva en Instagram o WhatsApp.</p>
+        <h4>Empieza a recibir citas</h4>
+        <p>Comparte tu enlace en Instagram o WhatsApp y llena tu agenda.</p>
       </div>
     </div>
   </section>
@@ -993,8 +1337,8 @@
   <section class="final-cta">
     <h2 class="serif">Céntrate en tu oficio.<br>Del resto, nos encargamos nosotros.</h2>
     <div class="final-btns">
-      <a href="reservar.html" class="btn-primary">Ver demostración de cliente</a>
-      <a href="panel.html" class="btn-link">Explorar panel de dueño</a>
+      <a href="reservar.html" class="box">Reservas en acción</a>
+      <a href="panel.html" class="box">Control total del negocio</a>
     </div>
   </section>
 
@@ -1016,7 +1360,7 @@
   <!-- WIDGET NAVEGADOR DEMO -->
   <div class="demo-widget">
     <div class="demo-widget-label">Demo</div>
-    <a href="index.html">Landing</a>
+    <a href="index.html">Isolvia</a>
     <a href="reservar.html">Cliente</a>
     <a href="panel.html">Panel</a>
   </div>
