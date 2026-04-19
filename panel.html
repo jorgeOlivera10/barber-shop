@@ -109,6 +109,11 @@
       outline-offset: 2px;
     }
 
+    /* Safari Click Compatibility */
+    [onclick], button, .sb-item, .kpi-card, .tl-item, .td-btn, .cal-ev, .cal-gap, .bar-seg {
+      cursor: pointer !important;
+    }
+
     /* ── LAYOUT ── */
     .layout {
       display: flex;
@@ -548,13 +553,19 @@
     }
 
     .td-btn {
-      padding: .3rem .65rem;
-      font-size: .65rem;
+      padding: .4rem .75rem;
+      font-size: .68rem;
       font-weight: 600;
       border: 1px solid var(--border-2);
       color: var(--text-soft);
       transition: all .15s;
-      border-radius: 0;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 32px;
+      min-height: 32px;
     }
 
     .td-btn:hover {
@@ -1734,6 +1745,9 @@
 
         <!-- ═══ DASHBOARD ═══ -->
         <div class="view active" id="view-dashboard">
+          <!-- Week Bar (New) -->
+          <div id="dash-week-bar" style="margin-bottom:1rem;"></div>
+
           <!-- KPIs -->
           <div class="kpi-grid" id="kpi-grid">
             <!-- populated by JS -->
@@ -2170,7 +2184,7 @@
 
       const toast = (msg, icon = '✓') => {
         const el = $('#toast');
-        el.innerHTML = `<span class="toast-icon">${icon}</span>${msg}`;
+        el.innerHTML = '<span class="toast-icon">' + icon + '</span>' + msg;
         el.classList.add('show');
         clearTimeout(el._t);
         el._t = setTimeout(() => el.classList.remove('show'), 2800);
@@ -2391,6 +2405,25 @@
         if (lbl) lbl.textContent = labelText;
         if (lblM) lblM.textContent = labelText;
 
+        // Render Week Bar
+        let weekHtml = '<div style="display:flex; gap:0.5rem; overflow-x:auto; margin-bottom:1.5rem; padding-bottom:0.5rem; -webkit-overflow-scrolling:touch;">';
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(today);
+          d.setDate(today.getDate() + i);
+          const iso = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+          const name = i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : DAYS_ES[d.getDay()].substring(0, 3);
+          const count = DB.appointments.filter(a => a.date === iso && a.status !== 'cancelled').length;
+          const isSel = dashSelectedDate.getFullYear() + '-' + pad(dashSelectedDate.getMonth() + 1) + '-' + pad(dashSelectedDate.getDate()) === iso;
+          
+          weekHtml += '<div onclick="window.goToDay(\'' + iso + '\')" style="cursor:pointer; min-width:80px; flex:1; text-align:center; padding:0.75rem; border-radius:8px; border:1px solid ' + (isSel ? 'var(--gold)' : 'var(--border)') + '; background:' + (isSel ? 'var(--gold-05)' : 'var(--surface)') + ';">' +
+              '<div style="font-size:0.65rem; color:' + (isSel ? 'var(--gold)' : 'var(--muted)') + '; font-weight:700; text-transform:uppercase">' + name + ' <span style="opacity:0.6">' + d.getDate() + '</span></div>' +
+              '<div style="font-size:1rem; font-weight:700; margin-top:0.25rem">' + count + ' <span style="font-size:0.6rem;font-weight:500;opacity:0.7">citas</span></div>' +
+            '</div>';
+        }
+        weekHtml += '</div>';
+        const weekBar = $('#dash-week-bar');
+        if (weekBar) weekBar.innerHTML = weekHtml;
+
         // Obtener citas
         const isoDates = dates.map(d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
         let periodAppts = DB.appointments.filter(a => isoDates.includes(a.date));
@@ -2402,25 +2435,44 @@
         const pendingAppts = periodAppts.filter(a => a.status === 'pending' || a.status === 'active').length;
         const noshowAppts = periodAppts.filter(a => a.status === 'noshow').length;
         const perf = totalAppts > 0 ? Math.round((doneAppts / totalAppts) * 100) : 0;
+        
+        // Calcular próximo cliente (Solo para vista diaria)
+        let nextClientInfo = 'No hay más citas';
+        if (dashViewType === 'day') {
+           const activeAppt = periodAppts.find(a => a.status === 'active') || periodAppts.filter(a => a.status === 'pending').sort((a,b) => a.time.localeCompare(b.time))[0];
+           if (activeAppt) {
+              const cl = getClient(activeAppt.clientId);
+              const [h, m] = activeAppt.time.split(':').map(Number);
+              const t = new Date(); t.setHours(h, m, 0);
+              const diff = Math.floor((t - new Date()) / 60000);
+              let timeLabel = activeAppt.time;
+              if (dashSelectedDate.toDateString() === today.toDateString()) {
+                 if (diff <= 0) timeLabel = 'AHORA';
+                 else if (diff < 60) timeLabel = 'En ' + diff + ' min';
+                 else timeLabel = 'En ' + Math.floor(diff/60) + 'h ' + (diff%60) + 'm';
+              }
+              nextClientInfo = '<strong>' + timeLabel + '</strong> · ' + (cl ? cl.name : 'Anónimo');
+           }
+        }
 
         // Render KPIs
         $('#kpi-grid').innerHTML = 
-          '<div class="kpi-card" style="grid-column: span 1;">' +
-            '<div class="kpi-label">TOTAL CITAS ' + (dashViewType === 'day' ? 'DEL DÍA' : 'DE LA SEMANA') + '</div>' +
+          '<div class="kpi-card">' +
+            '<div class="kpi-label">CITAS ' + (dashViewType === 'day' ? 'DEL DÍA' : 'DE LA SEMANA') + '</div>' +
             '<div class="kpi-value">' + totalAppts + '</div>' +
-            '<div class="kpi-sub">' + doneAppts + ' completadas · ' + pendingAppts + ' pendientes</div>' +
+            '<div class="kpi-sub">' + pendingAppts + ' pendientes · ' + doneAppts + ' completadas</div>' +
           '</div>' +
-          '<div class="kpi-card" style="grid-column: span 1;">' +
+          '<div class="kpi-card">' +
             '<div class="kpi-label">PROGRESO</div>' +
             '<div class="kpi-value">' + perf + '%</div>' +
-            '<div style="height:3px; background:var(--surface2); margin-top:8px; border-radius:1.5px; overflow:hidden">' +
+            '<div style="height:4px; background:var(--surface2); margin-top:8px; border-radius:2px; overflow:hidden">' +
               '<div style="height:100%; width:' + perf + '%; background:var(--gold); transition:width 0.5s"></div>' +
             '</div>' +
           '</div>' +
-          '<div class="kpi-card" style="grid-column: span 1;">' +
-            '<div class="kpi-label">NO-SHOWS DE ' + (dashViewType === 'day' ? 'HOY' : 'LA SEMANA') + '</div>' +
-            '<div class="kpi-value" style="color:' + (noshowAppts > 0 ? 'var(--red)' : 'var(--text)') + '">' + noshowAppts + '</div>' +
-            '<div class="kpi-sub">Citas perdidas en el periodo</div>' +
+          '<div class="kpi-card" style="background:var(--gold-05); border-color:var(--gold-20)">' +
+            '<div class="kpi-label" style="color:var(--gold-deep)">PRÓXIMO CLIENTO</div>' +
+            '<div class="kpi-value" style="font-size:1.4rem; padding-top:4px">' + nextClientInfo + '</div>' +
+            '<div class="kpi-sub" style="color:var(--gold-deep)">Agenda actualizada</div>' +
           '</div>';
         $('#kpi-grid').style.gridTemplateColumns = 'repeat(3, 1fr)';
 
@@ -2602,18 +2654,18 @@
         tbody.innerHTML = list.map(a => {
           const cl = getClient(a.clientId);
           const svc = getService(a.serviceId);
-          return `<tr>
-        <td><strong>${a.time}</strong><br><span style="font-size:.68rem;color:var(--muted)">${fmtDate(a.date)}</span></td>
-        <td>${cl ? cl.name : '<span style="color:var(--muted)">—</span>'}</td>
-        <td>${svc ? svc.name : '<span style="color:var(--muted)">—</span>'}</td>
-        <td style="color:var(--muted)">${svc ? svc.duration + ' min' : '—'}</td>
-        <td>${fmtPrice(a.price)}</td>
-        <td><span class="${pillClass(a.status)}">${statusLabel(a.status)}</span></td>
-        <td><div class="td-actions">
-          <button class="td-btn" data-edit-appt="${a.id}">Editar</button>
-          <button class="td-btn danger" data-del-appt="${a.id}">Eliminar</button>
-        </div></td>
-      </tr>`;
+          return '<tr>' +
+            '<td><strong>' + a.time + '</strong><br><span style="font-size:.68rem;color:var(--muted)">' + fmtDate(a.date) + '</span></td>' +
+            '<td>' + (cl ? cl.name : '<span style="color:var(--muted)">—</span>') + '</td>' +
+            '<td>' + (svc ? svc.name : '<span style="color:var(--muted)">—</span>') + '</td>' +
+            '<td style="color:var(--muted)">' + (svc ? svc.duration + ' min' : '—') + '</td>' +
+            '<td>' + fmtPrice(a.price) + '</td>' +
+            '<td><span class="' + pillClass(a.status) + '">' + statusLabel(a.status) + '</span></td>' +
+            '<td><div class="td-actions">' +
+              '<button class="td-btn" data-edit-appt="' + a.id + '">Editar</button>' +
+              '<button class="td-btn danger" data-del-appt="' + a.id + '">Eliminar</button>' +
+            '</div></td>' +
+          '</tr>';
         }).join('');
 
         bindTLActions();
@@ -2646,40 +2698,43 @@
         grid.innerHTML = list.map(c => {
           const cAppts = DB.appointments.filter(a => a.clientId === c.id);
           const cDone = cAppts.filter(a => a.status === 'done').sort((a, b) => b.date.localeCompare(a.date));
+          
           let daysAgo = '—';
           if (cDone.length > 0) {
             const diffMs = new Date() - new Date(cDone[0].date);
             const diffDays = Math.floor(diffMs / 86400000);
             if (diffDays === 0) daysAgo = 'Hoy';
             else if (diffDays === 1) daysAgo = 'Ayer';
-            else if (diffDays < 7) daysAgo = `Hace ${diffDays}d`;
-            else if (diffDays < 30) daysAgo = `Hace ${Math.floor(diffDays / 7)} sem`;
-            else daysAgo = `Hace ${Math.floor(diffDays / 30)} mes`;
+            else if (diffDays < 7) daysAgo = 'Hace ' + diffDays + 'd';
+            else if (diffDays < 30) daysAgo = 'Hace ' + Math.floor(diffDays / 7) + ' sem';
+            else daysAgo = 'Hace ' + Math.floor(diffDays / 30) + ' mes';
           }
+
           const cIncome = income(cDone);
           const initials = c.name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
-          const tagPill = c.tag ? `<span class="pill pill-${c.tag}">${c.tag === 'vip' ? '★ VIP' : c.tag === 'new' ? 'Nuevo' : 'Frecuente'}</span>` : '';
-          return `<div class="client-card">
-                  <div class="client-card-top">
-                    <div class="client-avatar">${initials}</div>
-                    <div>
-                      <div class="client-name">${c.name}</div>
-                      <div class="client-phone">${c.phone || c.email || 'Sin contacto'}</div>
-                    </div>
-                    ${tagPill}
-                  </div>
-        ${c.notes ? `<div class="client-notes">${c.notes}</div>` : ''}
-        <div class="client-stats">
-          <div class="cs-item"><div class="cs-val">${cAppts.length}</div><div class="cs-label">Citas</div></div>
-          <div class="cs-item"><div class="cs-val">${cDone.length}</div><div class="cs-label">Complet.</div></div>
-          <div class="cs-item"><div class="cs-val">${fmtPrice(cIncome)}</div><div class="cs-label">Total</div></div>
-        </div>
-        <div class="client-actions">
-          <button class="td-btn" style="flex:1" data-edit-client="${c.id}">Editar</button>
-          <button class="td-btn" style="flex:1" data-new-appt-client="${c.id}">+ Cita</button>
-          <button class="td-btn danger" data-del-client="${c.id}">✕</button>
-        </div>
-      </div>`;
+          const tagPill = c.tag ? '<span class="pill pill-' + c.tag + '">' + (c.tag === 'vip' ? '★ VIP' : c.tag === 'new' ? 'Nuevo' : 'Frecuente') + '</span>' : '';
+          
+          return '<div class="client-card">' +
+                   '<div class="client-card-top">' +
+                     '<div class="client-avatar">' + initials + '</div>' +
+                     '<div>' +
+                       '<div class="client-name">' + c.name + '</div>' +
+                       '<div class="client-phone">' + (c.phone || c.email || 'Sin contacto') + '</div>' +
+                     '</div>' +
+                     tagPill +
+                   '</div>' +
+         (c.notes ? '<div class="client-notes">' + c.notes + '</div>' : '') +
+         '<div class="client-stats">' +
+           '<div class="cs-item"><div class="cs-val">' + daysAgo + '</div><div class="cs-label">Últ. vez</div></div>' +
+           '<div class="cs-item"><div class="cs-val">' + cAppts.length + '</div><div class="cs-label">Citas</div></div>' +
+           '<div class="cs-item"><div class="cs-val">' + fmtPrice(cIncome) + '</div><div class="cs-label">Total</div></div>' +
+         '</div>' +
+         '<div class="client-actions">' +
+           '<button class="td-btn" style="flex:1" data-edit-client="' + c.id + '">Editar</button>' +
+           '<button class="td-btn" style="flex:1" data-new-appt-client="' + c.id + '">+ Cita</button>' +
+           '<button class="td-btn danger" data-del-client="' + c.id + '">✕</button>' +
+         '</div>' +
+       '</div>';
         }).join('');
 
         $$('[data-edit-client]').forEach(btn => on(btn, 'click', () => openClientModal(btn.dataset.editClient)));
@@ -2708,20 +2763,20 @@
         }
         grid.innerHTML = DB.services.map((s, i) => {
           const sAppts = DB.appointments.filter(a => a.serviceId === s.id && a.status === 'done');
-          return `<div class="service-card ${!s.active ? 'opacity: .5' : ''}">
-        <div class="service-num">${String(i + 1).padStart(2, '0')}</div>
-        <div class="service-name">${s.name}</div>
-        <div class="service-meta">${s.duration} min${s.desc ? ' · ' + s.desc : ''}</div>
-        <div class="service-price">${fmtPrice(s.price)}</div>
-        <div class="service-bottom">
-          <span class="${s.active ? 'pill pill-done' : 'pill pill-cancelled'}">${s.active ? 'Activo' : 'Inactivo'}</span>
-          <div class="service-actions">
-            <button class="td-btn" data-edit-svc="${s.id}">Editar</button>
-            <button class="td-btn danger" data-del-svc="${s.id}">✕</button>
-          </div>
-        </div>
-        <div style="font-size:.65rem;color:var(--muted);margin-top:.5rem">${sAppts.length} citas realizadas</div>
-      </div>`;
+          return '<div class="service-card ' + (!s.active ? 'opacity: .5' : '') + '">' +
+        '<div class="service-num">' + String(i + 1).padStart(2, '0') + '</div>' +
+        '<div class="service-name">' + s.name + '</div>' +
+        '<div class="service-meta">' + s.duration + ' min' + (s.desc ? ' · ' + s.desc : '') + '</div>' +
+        '<div class="service-price">' + fmtPrice(s.price) + '</div>' +
+        '<div class="service-bottom">' +
+          '<span class="' + (s.active ? 'pill pill-done' : 'pill pill-cancelled') + '">' + (s.active ? 'Activo' : 'Inactivo') + '</span>' +
+          '<div class="service-actions">' +
+            '<button class="td-btn" data-edit-svc="' + s.id + '">Editar</button>' +
+            '<button class="td-btn danger" data-del-svc="' + s.id + '">✕</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:.65rem;color:var(--muted);margin-top:.5rem">' + sAppts.length + ' citas realizadas</div>' +
+      '</div>';
         }).join('');
 
         $$('[data-edit-svc]').forEach(btn => on(btn, 'click', () => openServiceModal(btn.dataset.editSvc)));
@@ -2737,37 +2792,35 @@
          INFORMES
       ══════════════════════════════════════════════════════ */
       function renderReports() {
-        const todayIncome = income(todayAppts().filter(a => a.status === 'done'));
-        const weekIncome = income(weekAppts().filter(a => a.status === 'done'));
-        const monthIncomeVal = income(monthAppts().filter(a => a.status === 'done'));
-
-        const allDone = DB.appointments.filter(a => a.status === 'done');
-        const total = income(allDone);
+        const tDone = DB.appointments.filter(a => a.date === todayISO && a.status === 'done');
+        const wDone = weekAppts().filter(a => a.status === 'done');
         const ma = monthAppts();
         const mDone = ma.filter(a => a.status === 'done');
+        const allDone = DB.appointments.filter(a => a.status === 'done');
+        const total = income(allDone);
         const noShows = DB.appointments.filter(a => a.status === 'noshow').length;
 
         // KPI cards
-        $('#rep-kpi-grid').innerHTML = `
-      <div class="rep-card"><div class="rep-label">Ingresos totales</div><div class="rep-val">${fmtPrice(total)}</div><div class="rep-ctx">Histórico de ${allDone.length} citas</div></div>
-      <div class="rep-card"><div class="rep-label">Ingresos este mes</div><div class="rep-val">${fmtPrice(income(mDone))}</div><div class="rep-ctx">${mDone.length} citas completadas</div></div>
-      <div class="rep-card"><div class="rep-label">No-shows</div><div class="rep-val">${noShows}</div><div class="rep-ctx">Citas sin presentarse</div></div>
-        `;
+        $('#rep-kpi-grid').innerHTML = 
+          '<div class="rep-card"><div class="rep-label">Ingresos Hoy</div><div class="rep-val">' + fmtPrice(income(tDone)) + '</div><div class="rep-ctx">En la jornada actual</div></div>' +
+          '<div class="rep-card"><div class="rep-label">Ingresos Semana</div><div class="rep-val">' + fmtPrice(income(wDone)) + '</div><div class="rep-ctx">Últimos 7 días</div></div>' +
+          '<div class="rep-card"><div class="rep-label">Ingresos Mes</div><div class="rep-val">' + fmtPrice(income(mDone)) + '</div><div class="rep-ctx">' + mDone.length + ' citas completadas</div></div>' +
+          '<div class="rep-card"><div class="rep-label">No-shows</div><div class="rep-val">' + noShows + '</div><div class="rep-ctx">Citas sin presentarse</div></div>';
 
         // Bar chart (últimos 7 días)
         const days = Array.from({ length: 7 }, (_, i) => {
           const d = new Date(today); d.setDate(today.getDate() - (6 - i));
-          return { iso: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, label: d.getDate() + '/' + (d.getMonth() + 1) };
+          return { iso: [d.getFullYear(), pad(d.getMonth() + 1), pad(d.getDate())].join('-'), label: d.getDate() + '/' + (d.getMonth() + 1) };
         });
         const dayIncomes = days.map(d => income(DB.appointments.filter(a => a.date === d.iso && a.status === 'done')));
         const maxI = Math.max(...dayIncomes, 1);
         const chart = $('#bar-chart');
         chart.innerHTML = days.map((d, i) => {
           const h = Math.max(4, Math.round(dayIncomes[i] / maxI * 100));
-          return `<div class="bar-col">
-        <div class="bar-seg" title="${d.label}: ${fmtPrice(dayIncomes[i])}" style="height:${h}%"></div>
-        <div class="bar-lbl">${d.label}</div>
-      </div>`;
+          return '<div class="bar-col">' +
+        '<div class="bar-seg" title="' + d.label + ': ' + fmtPrice(dayIncomes[i]) + '" style="height:' + h + '%"></div>' +
+        '<div class="bar-lbl">' + d.label + '</div>' +
+      '</div>';
         }).join('');
 
         // Services table
@@ -2778,12 +2831,12 @@
 
         $('#rep-services-tbody').innerHTML = svcStats.map(s => {
           const pct = total > 0 ? (s.income / total * 100).toFixed(1) : '0.0';
-          return `<tr>
-        <td>${s.name}</td>
-        <td>${s.count}</td>
-        <td>${fmtPrice(s.income)}</td>
-        <td>${pct}%</td>
-      </tr>`;
+          return '<tr>' +
+        '<td>' + s.name + '</td>' +
+        '<td>' + s.count + '</td>' +
+        '<td>' + fmtPrice(s.income) + '</td>' +
+        '<td>' + pct + '%</td>' +
+      '</tr>';
         }).join('');
       }
 
