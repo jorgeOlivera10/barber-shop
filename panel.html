@@ -1301,7 +1301,7 @@
 
     @media(max-width:900px) {
       /* Ocultar controles cal del topbar en móvil */
-      #dash-nav { display: none !important; }
+      #dash-nav { display: none; }
     }
 
     /* Impedir overflow horizontal en todo el calendario */
@@ -3010,6 +3010,8 @@
       }
 
       window.openApptModal = openApptModal;
+      window.openClientModal = openClientModal;
+      window.openServiceModal = openServiceModal;
       window.renderDashboard = renderDashboard;
       window.dashViewType = dashViewType;
       window.dashSelectedDate = dashSelectedDate;
