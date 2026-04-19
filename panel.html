@@ -1718,15 +1718,15 @@
         </div>
       </div>
 
-      <div id="dash-subbar" style="display:none; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:nowrap;">
+      <div id="dash-subbar" style="display:none; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:nowrap; position:sticky; top:var(--topbar-h); z-index:110;">
         <div style="background:var(--surface2); border-radius:6px; display:flex; padding:2px; border:1px solid var(--border); flex-shrink:0;">
-          <button id="btn-view-day-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,0.1);">Día</button>
-          <button id="btn-view-week-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; color:var(--text-soft);">Semana</button>
+          <button id="btn-view-day-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">Día</button>
+          <button id="btn-view-week-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; color:var(--text-soft); cursor:pointer;">Semana</button>
         </div>
-        <button id="btn-nav-prev-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;">‹</button>
-        <span id="dash-date-label-m" style="flex:1;font-size:0.78rem;font-weight:600;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <button id="btn-nav-next-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;">›</button>
-        <button id="btn-nav-today-m" style="display:none;padding:4px 10px;font-size:0.68rem;font-weight:700;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--gold);flex-shrink:0;">Hoy</button>
+        <button id="btn-nav-prev-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;cursor:pointer;">‹</button>
+        <span id="dash-date-label-m" style="flex:1;font-size:0.78rem;font-weight:600;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:none;"></span>
+        <button id="btn-nav-next-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;cursor:pointer;">›</button>
+        <button id="btn-nav-today-m" style="display:none;padding:4px 10px;font-size:0.68rem;font-weight:700;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--gold);flex-shrink:0;cursor:pointer;">Hoy</button>
       </div>
 
       <!-- CONTENT -->
@@ -2302,7 +2302,11 @@
         on(document.getElementById('btn-view-week-m'), 'click', () => { dashViewType = 'week'; renderDashboard(); });
         on(document.getElementById('btn-nav-prev-m'), 'click', () => { dashSelectedDate.setDate(dashSelectedDate.getDate() - (dashViewType === 'week' ? 7 : 1)); renderDashboard(); });
         on(document.getElementById('btn-nav-next-m'), 'click', () => { dashSelectedDate.setDate(dashSelectedDate.getDate() + (dashViewType === 'week' ? 7 : 1)); renderDashboard(); });
-        on(document.getElementById('btn-nav-today-m'), 'click', () => { dashSelectedDate = new Date(); renderDashboard(); });
+        on(document.getElementById('btn-nav-today-m'), 'click', () => { dashSelectedDate = new Date(today); renderDashboard(); });
+        
+        on(window, 'resize', () => {
+          if (currentView === 'dashboard') showView('dashboard');
+        });
       }, 0);
 
       const SVC_COLORS = [
