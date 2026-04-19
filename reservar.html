@@ -1967,6 +1967,48 @@
         grid-template-columns: repeat(2, 1fr)
       }
     }
+    /* WIDGET NAVEGADOR DEMO */
+    .demo-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #F7F5F0;
+      border: 1px solid rgba(42, 43, 40, 0.25);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 50px;
+    }
+
+    .demo-widget-label {
+      padding: 0 10px;
+      font-size: 0.65rem;
+      color: #C2785B;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border-right: 1px solid rgba(42, 43, 40, 0.1);
+      margin-right: 4px;
+    }
+
+    .demo-widget a {
+      text-decoration: none;
+      color: #555550 !important;
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      padding: 6px 14px;
+      border-radius: 30px;
+      transition: 0.2s;
+    }
+
+    .demo-widget a:hover {
+      background: #FFFFFF;
+      color: #2A2B28 !important;
+    }
   </style>
 </head>
 
@@ -2628,6 +2670,13 @@
       if (document.readyState === 'loading') on(document, 'DOMContentLoaded', init); else init();
     })();
   </script>
+  <!-- WIDGET NAVEGADOR DEMO -->
+  <div class="demo-widget">
+    <div class="demo-widget-label">Demo</div>
+    <a href="index.html">Isolvia</a>
+    <a href="reservar.html">Cliente</a>
+    <a href="panel.html">Panel</a>
+  </div>
 </body>
 
 </html>
