@@ -1302,6 +1302,10 @@
     }
 
     @media(max-width:600px) {
+      :root {
+        --topbar-h: 56px;
+      }
+
       .modal-overlay {
         padding: 0;
         align-items: flex-end;
@@ -1931,7 +1935,7 @@
       </div>
 
       <div id="dash-subbar"
-        style="display:none; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:nowrap; position:sticky; top:var(--topbar-h); z-index:110;">
+        style="display:none; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:nowrap; position:sticky; top:56px; z-index:110;">
         <div
           style="background:var(--surface2); border-radius:6px; display:flex; padding:2px; border:1px solid var(--border); flex-shrink:0;">
           <button id="btn-view-day-m" onclick="window.setDashView('day')"
@@ -2732,7 +2736,7 @@
           '<div class="kpi-value" style="font-size:1.4rem; padding-top:4px">' + nextClientInfo + '</div>' +
           '<div class="kpi-sub" style="color:var(--gold-deep)">Agenda actualizada</div>' +
           '</div>';
-        $('#kpi-grid').style.gridTemplateColumns = 'repeat(3, 1fr)';
+        $('#kpi-grid').style.gridTemplateColumns = window.innerWidth <= 600 ? '1fr' : 'repeat(3, 1fr)';
 
         // Render Calendar
         const calHeaderClass = dashViewType === 'week' ? 'cal-header week-header' : 'cal-header';
