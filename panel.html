@@ -1347,6 +1347,86 @@
       .rep-grid {
         grid-template-columns: 1fr;
       }
+
+      /* Final Responsive Refinements */
+      body {
+        font-size: 15px;
+      }
+
+      .topbar {
+        height: 56px;
+        padding: 0 1rem;
+      }
+
+      .topbar-context h1 {
+        font-size: 1.05rem;
+      }
+
+      .topbar-subtitle {
+        display: none;
+      }
+
+      .btn-new {
+        font-size: 0;
+        padding: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .btn-new::before {
+        content: '＋';
+        font-size: 1.3rem;
+        line-height: 1;
+      }
+
+      .content {
+        padding: 0.875rem;
+      }
+
+      .kpi-value {
+        font-size: 1.6rem;
+      }
+
+      .kpi-label {
+        font-size: 0.65rem;
+      }
+
+      .fg input,
+      .fg select,
+      .fg textarea {
+        padding: .85rem 1rem;
+        font-size: .95rem;
+      }
+
+      .fg label {
+        font-size: .65rem;
+      }
+
+      .modal-hdr {
+        padding: 1.1rem 1.25rem;
+      }
+
+      .modal-body {
+        padding: 1.1rem 1.25rem;
+      }
+
+      .table-wrap table thead th:nth-child(3),
+      .table-wrap table thead th:nth-child(4),
+      .table-wrap table tbody td:nth-child(3),
+      .table-wrap table tbody td:nth-child(4) {
+        display: none;
+      }
+
+      #toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        max-width: none;
+      }
     }
 
     @media(max-width:900px) {
