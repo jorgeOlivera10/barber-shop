@@ -4,472 +4,1211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel - Barbería El Maestro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
+  <title>Barbería Clásica — Panel CRM</title>
+  <meta name="description"
+    content="Panel de gestión CRM para Barbería Clásica. Agenda, clientes, servicios e ingresos.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <style>
-    * {
+    *,
+    *::before,
+    *::after {
       margin: 0;
       padding: 0;
-      box-sizing: border-box
+      box-sizing: border-box;
     }
 
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface2: #1c1c1c;
-      --text: #f5f0e8;
-      --text-soft: #b0a898;
-      --white: var(--surface);
-      --dark: var(--gold);
-      --border: rgba(212, 175, 55, 0.12);
-      --border-light: rgba(212, 175, 55, 0.06);
-      --gold: #D4AF37;
-      --gold-light: #E8C547;
-      --green: #16a34a;
-      --green-bg: rgba(22, 163, 74, 0.1);
-      --green-border: rgba(22, 163, 74, 0.3);
-      --amber: #d97706;
-      --amber-bg: rgba(217, 119, 6, 0.1);
-      --amber-border: rgba(217, 119, 6, 0.3);
-      --red: #dc2626;
-      --red-bg: rgba(220, 38, 38, 0.1);
-      --red-border: rgba(220, 38, 38, 0.3);
-      --blue: #2563eb;
-      --blue-bg: rgba(37, 99, 235, 0.1);
-      --blue-border: rgba(37, 99, 235, 0.3);
+      /* ── Paleta Clara Isolvia ── */
+      --bg: #F7F5F0;
+      --surface: #FFFFFF;
+      --surface2: #F0F2EB;
+      --surface3: rgba(42, 43, 40, 0.05);
+      --text: #2A2B28;
+      --text-soft: #555550;
+      --muted: #8A8881;
+      --muted-dim: #6D735C;
+      --gold: #C2785B;
+      --gold-soft: #A55D42;
+      --gold-deep: #A55D42;
+      --gold-05: rgba(194, 120, 91, .05);
+      --gold-10: rgba(194, 120, 91, .10);
+      --gold-20: rgba(194, 120, 91, .20);
+      --gold-30: rgba(194, 120, 91, .30);
+      --white: #FFFFFF;
+      --border: rgba(42, 43, 40, .10);
+      --border-2: rgba(42, 43, 40, .20);
+      /* Estados */
+      --green: #6D735C;
+      --green-bg: rgba(109, 115, 92, .12);
+      --amber: #B38640;
+      --amber-bg: rgba(179, 134, 64, .12);
+      --red: #A6655B;
+      --red-bg: rgba(166, 101, 91, .12);
+      --blue: #5B7AA6;
+      --blue-bg: rgba(91, 122, 166, .12);
+      --purple: #816A91;
+      --purple-bg: rgba(129, 106, 145, .12);
+      /* Layout */
+      --sidebar-w: 240px;
+      --topbar-h: 70px;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+      --shadow-gold: 0 6px 16px rgba(194, 120, 91, .25);
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
-      display: flex;
-      min-height: 100vh
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      font-size: 13.5px;
+      line-height: 1.5;
     }
 
-    /* SIDEBAR */
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    input,
+    textarea,
+    select {
+      font: inherit;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 0;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-10);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
     .sidebar {
-      width: 240px;
-      background: var(--white);
+      width: var(--sidebar-w);
+      background: var(--surface);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       position: fixed;
       top: 0;
       bottom: 0;
-      z-index: 50;
-      transition: transform .3s
+      left: 0;
+      z-index: 200;
+      transition: transform .28s var(--ease);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .sb-brand {
-      padding: 1.5rem 1.25rem;
-      border-bottom: 1px solid var(--border)
+      padding: 1.25rem 1rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .625rem;
+      flex-shrink: 0;
     }
 
-    .sb-brand h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
+    .sb-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: var(--dark);
-      letter-spacing: -0.01em;
+      color: var(--bg);
+      flex-shrink: 0;
     }
 
-    .sb-brand p {
-      font-size: .68rem;
-      color: var(--text-soft);
-      margin-top: .15rem
+    .sb-brand-txt h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .sb-brand-txt p {
+      font-size: .6rem;
+      color: var(--muted);
+      margin-top: .1rem;
+      font-weight: 500;
     }
 
     .sb-nav {
       flex: 1;
-      padding: .75rem
+      padding: .75rem .5rem;
     }
 
     .sb-section {
-      font-size: .62rem;
+      font-size: .58rem;
       font-weight: 700;
-      color: var(--text-soft);
+      color: var(--muted-dim);
       text-transform: uppercase;
-      letter-spacing: .15em;
-      padding: .875rem .75rem .35rem
+      letter-spacing: .14em;
+      padding: .875rem .625rem .375rem;
     }
 
     .sb-item {
       display: flex;
       align-items: center;
-      gap: .625rem;
-      padding: .625rem .75rem;
+      gap: .5rem;
+      padding: .5rem .625rem;
       border-radius: 6px;
-      cursor: pointer;
-      font-size: .82rem;
+      font-size: .78rem;
       font-weight: 500;
       color: var(--text-soft);
-      transition: .15s;
-      margin-bottom: 1px
+      transition: background .12s, color .12s;
+      margin-bottom: 1px;
+      user-select: none;
     }
 
     .sb-item:hover {
-      background: var(--border-light);
-      color: var(--text)
+      background: var(--surface2);
+      color: var(--text);
     }
 
     .sb-item.active {
-      background: var(--dark);
-      color: var(--white);
-      font-weight: 600
+      background: var(--gold-10);
+      color: var(--gold);
+      font-weight: 600;
     }
 
-    .sb-item .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: .4
+    .sb-icon {
+      font-size: .88rem;
+      width: 16px;
+      text-align: center;
+      opacity: .7;
+      flex-shrink: 0;
     }
 
-    .sb-item.active .dot {
-      opacity: 1
+    .sb-item.active .sb-icon {
+      opacity: 1;
     }
 
-    .sb-item .badge {
+    .sb-badge {
       margin-left: auto;
-      font-size: .6rem;
+      font-size: .55rem;
       font-weight: 700;
-      background: var(--border-light);
-      color: var(--text-soft);
-      padding: .1rem .45rem;
-      border-radius: 10px
-    }
-
-    .sb-item.active .badge {
       background: var(--gold);
-      color: var(--bg)
+      color: var(--bg);
+      padding: .1rem .4rem;
+      border-radius: 10px;
+      line-height: 1.4;
     }
 
     .sb-footer {
-      padding: 1rem 1.25rem;
+      padding: .875rem 1rem;
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: .625rem
+      gap: .625rem;
+      flex-shrink: 0;
     }
 
     .sb-avatar {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--gold);
       color: var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: .7rem;
-      font-weight: 700
-    }
-
-    .sb-footer p {
-      font-size: .78rem;
-      font-weight: 600;
-      color: var(--gold)
-    }
-
-    .sb-footer small {
       font-size: .62rem;
-      color: var(--text-soft)
+      font-weight: 800;
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
     }
 
-    /* MAIN */
+    .sb-footer-txt p {
+      font-size: .74rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .sb-footer-txt small {
+      font-size: .58rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* Overlay */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 199;
+      opacity: 0;
+      transition: opacity .28s;
+    }
+
+    .sidebar-overlay.visible {
+      opacity: 1;
+    }
+
+    /* ── MAIN ── */
     .main {
       flex: 1;
-      margin-left: 240px;
-      min-height: 100vh
-    }
-
-    .topbar {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--white)
+      flex-direction: column;
     }
 
-    .topbar h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
+    /* ── TOPBAR ── */
+    .topbar {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      min-width: 0;
+    }
+
+    .hamburger {
+      display: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border-2);
+      background: var(--surface2);
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--text-soft);
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+
+    .hamburger:hover {
+      background: var(--surface3);
+      color: var(--text);
+    }
+
+    .topbar-context h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
       font-weight: 600;
-      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .topbar-subtitle {
+      font-size: .68rem;
+      color: var(--text-soft);
+      margin-top: .05rem;
     }
 
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: .75rem
+      gap: .75rem;
+      flex-shrink: 0;
     }
 
     .topbar-date {
-      font-size: .75rem;
-      color: var(--text-soft);
-      background: var(--bg);
-      padding: .45rem .875rem;
-      border-radius: 6px;
-      border: 1px solid var(--border)
+      font-size: .7rem;
+      color: var(--muted);
+      letter-spacing: .03em;
     }
 
-    .btn-sm {
-      padding: .45rem 1rem;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      font-size: .75rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: .15s;
-      background: var(--white);
-      color: var(--text)
+
+
+    .btn-new:hover {
+      background: var(--gold-soft);
+      box-shadow: var(--shadow-gold);
     }
 
-    .btn-sm:hover {
-      background: var(--border-light)
-    }
-
-    .btn-sm.dark {
-      background: var(--dark);
-      color: var(--white);
-      border-color: var(--dark)
-    }
-
-    .btn-sm.dark:hover {
-      opacity: .9
-    }
-
+    /* ── CONTENT ── */
     .content {
-      padding: 1.5rem 2rem
+      flex: 1;
+      padding: 1.5rem;
+      overflow-x: hidden;
     }
 
-    /* KPIs */
-    .kpis {
+    /* ── VIEWS ── */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeInUp .3s var(--ease-out);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── KPI GRID ── */
+    .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      margin-bottom: 1.5rem
+      margin-bottom: 1.5rem;
     }
 
-    .kpi {
-      background: var(--white);
+    .kpi-card {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.125rem 1.25rem
+      padding: 1.1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--border-2);
     }
 
     .kpi-label {
-      font-size: .68rem;
-      font-weight: 600;
-      color: var(--text-soft);
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
       text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: .5rem
+      color: var(--muted);
+      margin-bottom: .4rem;
     }
 
-    .kpi-row {
-      display: flex;
-      align-items: baseline;
-      gap: .5rem
-    }
-
-    .kpi-val {
-      font-family: 'Cormorant Garamond', serif;
+    .kpi-value {
+      font-family: 'Playfair Display', serif;
       font-size: 2rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--text);
       line-height: 1;
     }
 
-    .kpi-change {
+    .kpi-sub {
+      font-size: .65rem;
+      color: var(--muted);
+      margin-top: .3rem;
+    }
+
+    .kpi-delta {
+      font-size: .62rem;
+      font-weight: 700;
+      margin-top: .3rem;
+      display: flex;
+      align-items: center;
+      gap: .2rem;
+    }
+
+    .kpi-delta.up {
+      color: var(--green);
+    }
+
+    .kpi-delta.down {
+      color: var(--red);
+    }
+
+    .kpi-accent {
+      position: absolute;
+      right: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.8rem;
+      opacity: .07;
+    }
+
+    /* ── SECTION HEADER ── */
+    .sec-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sec-hdr-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sec-hdr-left p {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+
+    .sec-hdr-actions {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    thead th {
+      padding: .625rem 1rem;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: .75rem 1rem;
+      font-size: .8rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background .12s;
+    }
+
+    tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    .td-actions {
+      display: flex;
+      gap: .35rem;
+    }
+
+    .td-btn {
+      padding: .3rem .65rem;
       font-size: .65rem;
       font-weight: 600;
-      padding: .15rem .4rem;
-      border-radius: 4px
+      border: 1px solid var(--border-2);
+      color: var(--text-soft);
+      transition: all .15s;
+      border-radius: 0;
     }
 
-    .kpi-change.up {
-      background: var(--green-bg);
-      color: var(--green)
+    .td-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-05);
     }
 
-    .kpi-change.down {
+    .td-btn.danger:hover {
+      border-color: var(--red);
+      color: var(--red);
       background: var(--red-bg);
-      color: var(--red)
     }
 
-    /* GRID */
-    .grid-main {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 1rem;
-      margin-bottom: 1.5rem
+    /* ── STATUS PILL ── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      font-size: .58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
     }
 
-    /* CARD */
-    .card {
-      background: var(--white);
+    .pill::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pill-pending {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .pill-pending::before {
+      background: var(--amber);
+    }
+
+    .pill-active {
+      background: var(--blue-bg);
+      color: var(--blue);
+    }
+
+    .pill-active::before {
+      background: var(--blue);
+    }
+
+    .pill-done {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .pill-done::before {
+      background: var(--green);
+    }
+
+    .pill-cancelled {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .pill-cancelled::before {
+      background: var(--red);
+    }
+
+    .pill-noshow {
+      background: var(--purple-bg);
+      color: var(--purple);
+    }
+
+    .pill-noshow::before {
+      background: var(--purple);
+    }
+
+    .pill-vip {
+      background: var(--gold-10);
+      color: var(--gold);
+    }
+
+    .pill-vip::before {
+      background: var(--gold);
+    }
+
+    .pill-new {
+      background: var(--blue-bg);
+      color: var(--blue);
+    }
+
+    .pill-new::before {
+      background: var(--blue);
+    }
+
+    .pill-frequent {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .pill-frequent::before {
+      background: var(--green);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .empty-icon {
+      font-size: 2rem;
+      margin-bottom: .75rem;
+      opacity: .4;
+    }
+
+    /* ── DASHBOARD GRID ── */
+
+
+    /* ── TIMELINE ── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+
+
+
+
+
+
+
+
+    .tl-item.tl-now .tl-time {
+      color: var(--gold);
+    }
+
+
+
+
+
+    .tl-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .tl-actions {
+      display: flex;
+      gap: .3rem;
+    }
+
+    .tl-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      color: var(--text-soft);
+      transition: all .15s;
+    }
+
+    .tl-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-05);
+    }
+
+    .tl-btn.danger:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ── SIDEBAR WIDGET ── */
+    .widget {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden
+      margin-bottom: 1rem;
     }
 
-    .card-hdr {
-      padding: .875rem 1.125rem;
+    .widget-hdr {
+      padding: .875rem 1rem;
       border-bottom: 1px solid var(--border);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .widget-body {
+      padding: .875rem 1rem;
+    }
+
+    .widget-row {
       display: flex;
       justify-content: space-between;
-      align-items: center
+      align-items: center;
+      padding: .5rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .78rem;
+      gap: 1rem;
     }
 
-    .card-hdr h3 {
-      font-family: 'Cormorant Garamond', serif;
+    .widget-row:last-child {
+      border-bottom: none;
+    }
+
+    .widget-k {
+      color: var(--text-soft);
+    }
+
+    .widget-v {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .widget-v.accent {
+      color: var(--gold);
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+    }
+
+    /* ── QUICK STATS MINI ── */
+    .income-bar {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      margin-bottom: 1rem;
+    }
+
+    .income-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .65rem;
+      color: var(--muted);
+    }
+
+    .bar-track {
+      height: 4px;
+      background: var(--surface3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width .8s var(--ease-out);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: popIn .25s var(--ease-out);
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.96) translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-hdr {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-hdr h3 {
+      font-family: 'Playfair Display', serif;
       font-size: 1.2rem;
       font-weight: 600;
     }
 
-    .card-hdr .count {
-      font-size: .62rem;
-      font-weight: 700;
-      color: var(--text-soft);
-      background: var(--bg);
-      padding: .2rem .5rem;
-      border-radius: 4px;
-      border: 1px solid var(--border)
-    }
-
-    /* APPOINTMENTS LIST */
-    .apt {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      padding: .75rem 1.125rem;
-      border-bottom: 1px solid var(--border-light);
-      transition: .1s
-    }
-
-    .apt:last-child {
-      border-bottom: none
-    }
-
-    .apt:hover {
-      background: var(--bg)
-    }
-
-    .apt-time {
-      width: 44px;
-      font-size: .75rem;
-      font-weight: 700;
-      color: var(--text-soft);
-      text-align: center;
-      flex-shrink: 0
-    }
-
-    .apt-bar {
-      width: 2px;
+    .modal-close {
+      width: 32px;
       height: 32px;
-      border-radius: 1px;
-      background: var(--border);
-      flex-shrink: 0
-    }
-
-    .apt-bar.done {
-      background: var(--green)
-    }
-
-    .apt-bar.now {
-      background: var(--amber)
-    }
-
-    .apt-bar.pending {
-      background: var(--border)
-    }
-
-    .apt-info {
-      flex: 1;
-      min-width: 0
-    }
-
-    .apt-name {
-      font-size: .85rem;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis
-    }
-
-    .apt-svc {
-      font-size: .7rem;
-      color: var(--text-soft);
-      margin-top: .1rem
-    }
-
-    .badge {
-      font-size: .6rem;
-      font-weight: 700;
-      padding: .2rem .5rem;
-      border-radius: 4px;
-      white-space: nowrap
-    }
-
-    .badge-done {
-      background: var(--green-bg);
-      color: var(--green);
-      border: 1px solid var(--green-border)
-    }
-
-    .badge-now {
-      background: var(--amber-bg);
-      color: var(--amber);
-      border: 1px solid var(--amber-border)
-    }
-
-    .badge-conf {
-      background: var(--blue-bg);
-      color: var(--blue);
-      border: 1px solid var(--blue-border)
-    }
-
-    .apt-actions {
-      display: flex;
-      gap: .25rem
-    }
-
-    .apt-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      font-size: 1.2rem;
+      color: var(--muted);
       border: 1px solid var(--border);
-      background: var(--white);
-      cursor: pointer;
-      font-size: .7rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: .15s;
-      color: var(--text-soft)
+      transition: all .15s;
     }
 
-    .apt-btn:hover {
-      background: var(--bg);
-      color: var(--text)
+    .modal-close:hover {
+      border-color: var(--red);
+      color: var(--red);
     }
 
-    /* CHART */
-    .chart-wrap {
-      padding: 1rem 1.125rem 0
+    .modal-body {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .875rem;
     }
 
-    .chart-bars {
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: .75rem;
+      justify-content: flex-end;
+    }
+
+    .fg label {
+      display: block;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .35rem;
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      width: 100%;
+      padding: .65rem .875rem;
+      font-size: .82rem;
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.5;
+    }
+
+    .fgrow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .55rem 1.1rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border: 1px solid;
+      transition: all .2s var(--ease);
+      white-space: nowrap;
+      border-radius: 0;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+      border-color: var(--gold);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-soft);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-soft);
+      border-color: var(--border-2);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border-color: var(--red-bg);
+    }
+
+    .btn-danger:hover {
+      background: var(--red-bg);
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: .5rem .875rem .5rem 2.1rem;
+      font-size: .8rem;
+      min-width: 200px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: .65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .82rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .filter-select {
+      padding: .5rem .75rem;
+      font-size: .78rem;
+      min-width: 120px;
+    }
+
+    /* ── CLIENT CARD ── */
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .client-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      transition: border-color .2s;
+    }
+
+    .client-card:hover {
+      border-color: var(--border-2);
+    }
+
+    .client-card-top {
+      display: flex;
+      align-items: center;
+      gap: .875rem;
+      margin-bottom: .875rem;
+    }
+
+    .client-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gold-10);
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .client-name {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .15rem;
+    }
+
+    .client-phone {
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    .client-stats {
+      display: flex;
+      gap: 1rem;
+      padding-top: .75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .cs-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .cs-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .cs-label {
+      font-size: .58rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-top: .1rem;
+    }
+
+    .client-notes {
+      font-size: .7rem;
+      color: var(--text-soft);
+      margin: .625rem 0;
+      line-height: 1.5;
+      border-left: 2px solid var(--border-2);
+      padding-left: .625rem;
+    }
+
+    .client-actions {
+      display: flex;
+      gap: .35rem;
+      margin-top: .875rem;
+    }
+
+    /* ── SERVICE CARD ── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      transition: border-color .2s;
+    }
+
+    .service-card:hover {
+      border-color: var(--border-2);
+    }
+
+    .service-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold-20);
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+
+    .service-name {
+      font-size: .92rem;
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    .service-meta {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-bottom: .875rem;
+    }
+
+    .service-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .service-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .875rem;
+      padding-top: .75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .service-actions {
+      display: flex;
+      gap: .35rem;
+    }
+
+    /* ── REPORTS ── */
+    .rep-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .rep-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+    }
+
+    .rep-label {
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+
+    .rep-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rep-ctx {
+      font-size: .7rem;
+      color: var(--text-soft);
+      margin-top: .3rem;
+    }
+
+    .bar-chart {
       display: flex;
       align-items: flex-end;
-      gap: .625rem;
-      height: 110px
+      gap: .35rem;
+      height: 120px;
+      margin-top: 1rem;
     }
 
     .bar-col {
@@ -477,725 +1216,1708 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: .25rem
+      gap: .25rem;
     }
 
-    .bar-val {
-      font-size: .58rem;
-      font-weight: 700;
-      color: var(--text-soft)
-    }
-
-    .bar {
+    .bar-seg {
       width: 100%;
-      border-radius: 4px 4px 0 0;
-      transition: .3s;
-      min-height: 2px
+      background: var(--gold-30);
+      border-radius: 2px 2px 0 0;
+      transition: background .2s;
+      cursor: default;
     }
 
-    .bar-label {
-      font-size: .58rem;
-      color: var(--text-soft);
-      font-weight: 600
+    .bar-seg:hover {
+      background: var(--gold);
     }
 
-    .chart-total {
-      padding: .75rem 1.125rem;
-      border-top: 1px solid var(--border);
-      font-size: .72rem;
-      color: var(--text-soft);
-      display: flex;
-      justify-content: space-between
+    .bar-lbl {
+      font-size: .55rem;
+      color: var(--muted);
+      text-align: center;
     }
 
-    .chart-total b {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      color: var(--text)
-    }
-
-    /* QUICK STATS */
-    .qs {
-      padding: .75rem 1.125rem;
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      justify-content: space-between;
-      align-items: center
-    }
-
-    .qs:last-child {
-      border-bottom: none
-    }
-
-    .qs-label {
-      font-size: .75rem;
-      color: var(--text-soft)
-    }
-
-    .qs-val {
-      font-size: .82rem;
-      font-weight: 700
-    }
-
-    /* TABLE */
-    .tbl {
-      width: 100%;
-      border-collapse: collapse
-    }
-
-    .tbl th {
-      text-align: left;
-      font-size: .65rem;
-      font-weight: 700;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      padding: .7rem 1.125rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg)
-    }
-
-    .tbl td {
-      padding: .7rem 1.125rem;
-      font-size: .8rem;
-      border-bottom: 1px solid var(--border-light)
-    }
-
-    .tbl tr:hover {
-      background: var(--bg)
-    }
-
-    .dot-active {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      display: inline-block;
-      margin-right: .4rem
-    }
-
-    .dot-inactive {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--red);
-      display: inline-block;
-      margin-right: .4rem
-    }
-
-    .price {
-      font-weight: 700
-    }
-
-    .muted {
-      color: var(--text-soft)
-    }
-
-    .tbl-actions {
-      display: flex;
-      gap: .25rem
-    }
-
-    .tbl-btn {
-      padding: .25rem .55rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      color: var(--text-soft);
-      cursor: pointer;
-      font-size: .65rem;
-      font-weight: 600;
-      transition: .15s;
-      font-family: inherit
-    }
-
-    .tbl-btn:hover {
-      background: var(--bg);
-      color: var(--text)
-    }
-
-    /* TABS */
-    .tab-content {
-      display: none
-    }
-
-    .tab-content.active {
-      display: block
-    }
-
-    /* MOBILE */
-    .mobile-toggle {
-      display: none;
-      position: fixed;
-      top: .75rem;
-      left: .75rem;
-      z-index: 60;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      font-size: 1.2rem;
-      align-items: center;
-      justify-content: center;
-      color: var(--gold);
-      font-weight: 700;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5)
-    }
-
-    @media(max-width:860px) {
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px) {
       .sidebar {
-        transform: translateX(-100%)
+        transform: translateX(-100%);
       }
 
       .sidebar.open {
-        transform: translateX(0)
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay {
+        display: block;
       }
 
       .main {
-        margin-left: 0
+        margin-left: 0;
       }
 
-      .mobile-toggle {
-        display: flex
+      .hamburger {
+        display: flex;
       }
 
-      .kpis {
-        grid-template-columns: repeat(2, 1fr)
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .grid-main {
-        grid-template-columns: 1fr
+      .dash-grid {
+        grid-template-columns: 1fr;
       }
 
-      .topbar {
-        padding: .875rem 1.25rem .875rem 3.25rem
+      .rep-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width:600px) {
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
       }
 
       .content {
-        padding: 1.25rem
+        padding: 1rem;
       }
+
+      .topbar {
+        padding: 0 1rem;
+      }
+
+      .fgrow {
+        grid-template-columns: 1fr;
+      }
+
+      .client-grid,
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rep-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--gold-30);
+      padding: .75rem 1.25rem;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text);
+      z-index: 999;
+      box-shadow: var(--shadow-gold);
+      transform: translateY(120%);
+      opacity: 0;
+      transition: transform .3s var(--ease-out), opacity .3s;
+      max-width: 300px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      color: var(--gold);
+      margin-right: .4rem;
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      max-width: 900px;
+    }
+
+    .dash-grid>div:nth-child(2) {
+      display: none !important;
+    }
+
+    .btn-new {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .85rem 2.5rem;
+      background: var(--gold);
+      color: var(--white);
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      transition: all .2s var(--ease);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .btn-new:hover {
+      background: var(--gold-soft);
+      transform: translateY(-2px);
+    }
+
+    .tl-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--border-2);
+      padding: 1.25rem 1.5rem;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      transition: all .2s;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    .tl-item.tl-now {
+      border-left-color: var(--amber);
+      background: var(--amber-bg);
+    }
+
+    .tl-item.tl-pending {
+      border-left-color: var(--blue);
+    }
+
+    .tl-item.tl-done {
+      opacity: .65;
+      border-left-color: var(--green);
+    }
+
+    .tl-item.tl-done .tl-name {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .tl-time {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .tl-item.tl-now .tl-time {
+      color: var(--amber);
+    }
+
+    .tl-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .tl-service {
+      font-size: .9rem;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    .kpi-card {
+      border-radius: 6px;
+    }
+
+    /* ── CALENDAR ── */
+    .cal-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cal-header {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .cal-header-spacer {
+      width: 50px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .cal-header-days {
+      display: flex;
+      flex: 1;
+    }
+
+    .cal-header-day {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      border-right: 1px solid var(--border);
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .cal-header-day:last-child {
+      border-right: none;
+    }
+
+    .cal-header-day.is-today {
+      background: var(--gold-05);
+      color: var(--gold);
+    }
+
+    .cal-body {
+      display: flex;
+      height: 520px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .cal-hours {
+      width: 50px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .cal-hour-label {
+      height: 52px;
+      text-align: right;
+      padding-right: 8px;
+      font-size: 0.65rem;
+      color: var(--muted);
+      position: relative;
+      top: -6px;
+      pointer-events: none;
+    }
+
+    .cal-grid {
+      flex: 1;
+      display: flex;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .cal-col {
+      flex: 1;
+      position: relative;
+      border-right: 1px solid var(--border);
+    }
+
+    .cal-col:last-child {
+      border-right: none;
+    }
+
+    .cal-ev {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      border-radius: 5px;
+      padding: 4px 7px;
+      overflow: hidden;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      transition: transform 0.1s;
+      z-index: 2;
+    }
+
+    .cal-ev:hover {
+      transform: scale(1.02);
+      z-index: 10;
+    }
+
+    .ev-name {
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      line-height: 1.2;
+    }
+
+    .ev-info {
+      font-size: 10px;
+      opacity: 0.75;
+      margin-top: 1px;
+      white-space: nowrap;
+    }
+
+    .cal-gap {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      border: 1.5px dashed var(--border-2);
+      border-radius: 5px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cal-gap:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-05);
+      z-index: 5;
+    }
+
+    .cal-now-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--red);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .cal-now-line::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: -4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
     }
   </style>
 </head>
 
 <body>
+  <div class="layout">
 
-  <div id="mModal"
-    style="display:none;position:fixed;inset:0;background:rgba(10,10,10,0.8);backdrop-filter:blur(5px);z-index:999;align-items:center;justify-content:center;">
-    <div style="background:var(--surface);padding:2rem;border-radius:12px;border:1px solid var(--border);width:360px;">
-      <h3 style="margin-bottom:1rem;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1.5rem">Nueva
-        Cita</h3>
-      <input type="text" placeholder="Nombre del cliente"
-        style="width:100%;margin-bottom:1rem;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;font-family:inherit;">
-      <select
-        style="width:100%;margin-bottom:1rem;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;font-family:inherit;">
-        <option>Corte clásico</option>
-        <option>Arreglo de barba</option>
-        <option>Corte + Barba</option>
-      </select>
-      <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;">
-        <input type="date" id="mDateInput"
-          style="flex:1;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;font-family:inherit;color-scheme:dark;">
-        <input type="time"
-          style="width:110px;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;font-family:inherit;color-scheme:dark;">
+    <!-- ── SIDEBAR ── -->
+    <div class="sidebar-overlay" id="overlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">B</div>
+        <div class="sb-brand-txt">
+          <h2>Barbería Clásica</h2>
+          <p>Panel de gestión</p>
+        </div>
       </div>
-      <div style="display:flex;gap:1rem;justify-content:flex-end;">
-        <button onclick="document.getElementById('mModal').style.display='none'"
-          style="padding:.6rem 1rem;background:transparent;color:var(--text-soft);border:none;cursor:pointer;font-family:inherit;font-weight:600">Cancelar</button>
-        <button
-          onclick="document.getElementById('mModal').style.display='none';alert('Simulado: Cita agendada correctamente');"
-          style="padding:.6rem 1rem;background:var(--gold);color:var(--bg);border:none;font-weight:700;border-radius:4px;cursor:pointer;font-family:inherit">Guardar
-          cita</button>
+      <nav class="sb-nav">
+        <div class="sb-section">Principal</div>
+        <a class="sb-item active" data-view="dashboard" href="#">
+          <span class="sb-icon">◈</span> Dashboard
+        </a>
+        <a class="sb-item" data-view="agenda" href="#">
+          <span class="sb-icon">◐</span> Agenda
+          <span class="sb-badge" id="badge-agenda">0</span>
+        </a>
+        <div class="sb-section">Gestión</div>
+        <a class="sb-item" data-view="clients" href="#">
+          <span class="sb-icon">◉</span> Clientes
+        </a>
+        <a class="sb-item" data-view="services" href="#">
+          <span class="sb-icon">◆</span> Servicios
+        </a>
+        <a class="sb-item" data-view="reports" href="#">
+          <span class="sb-icon">▦</span> Informes
+        </a>
+        <div class="sb-section">Sistema</div>
+        <a class="sb-item" href="reservar.html">
+          <span class="sb-icon">↗</span> Ver reservas (web)
+        </a>
+        <a class="sb-item" href="index.html">
+          <span class="sb-icon">↗</span> Ver landing
+        </a>
+      </nav>
+      <div class="sb-footer">
+        <div class="sb-avatar">BC</div>
+        <div class="sb-footer-txt">
+          <p>Barbería Clásica</p><small>Plan Profesional</small>
+        </div>
       </div>
-    </div>
-  </div>
+    </aside>
 
-  <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <!-- ── MAIN ── -->
+    <div class="main">
 
-  <aside class="sidebar">
-    <div class="sb-brand">
-      <h2>El Maestro</h2>
-      <p>Panel de gestion</p>
-    </div>
-    <nav class="sb-nav">
-      <div class="sb-section">Principal</div>
-      <div class="sb-item active" onclick="showTab('dashboard', event)"><span class="dot"></span>Dashboard<span
-          class="badge">6</span></div>
-      <div class="sb-item" onclick="showTab('agenda', event)"><span class="dot"></span>Agenda</div>
-      <div class="sb-item" onclick="showTab('servicios', event)"><span class="dot"></span>Servicios</div>
-      <div class="sb-section">Gestion</div>
-      <div class="sb-item" onclick="showTab('clientes', event)"><span class="dot"></span>Clientes</div>
-      <div class="sb-item"><span class="dot"></span>Horarios</div>
-      <div class="sb-item"><span class="dot"></span>Bloqueos</div>
-      <div class="sb-section">Cuenta</div>
-      <div class="sb-item"><span class="dot"></span>Ajustes</div>
-      <div class="sb-item"><span class="dot"></span>Mi enlace</div>
-    </nav>
-    <div class="sb-footer">
-      <div class="sb-avatar">CM</div>
-      <div>
-        <p>Carlos Maestro</p><small>Plan Pro</small>
-      </div>
-    </div>
-  </aside>
-
-  <div class="main">
-    <div class="topbar">
-      <h1 id="topTitle">Dashboard</h1>
-      <div class="topbar-right">
-        <span class="topbar-date" id="tdDate">Fecha</span>
-        <button class="btn-sm dark" onclick="document.getElementById('mModal').style.display='flex'">+ Nueva
-          cita</button>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <div class="tab-content active" id="tc-dashboard">
-        <div class="kpis">
-          <div class="kpi">
-            <div class="kpi-label">Citas hoy</div>
-            <div class="kpi-row"><span class="kpi-val">6</span><span class="kpi-change up">+20%</span></div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Ingresos hoy</div>
-            <div class="kpi-row"><span class="kpi-val">148 &euro;</span><span class="kpi-change up">+12%</span></div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Esta semana</div>
-            <div class="kpi-row"><span class="kpi-val">490 &euro;</span><span class="kpi-change up">+8%</span></div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">No-shows</div>
-            <div class="kpi-row"><span class="kpi-val">2</span><span class="kpi-change down">-1</span></div>
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger" aria-label="Menú">☰</button>
+          <div class="topbar-context">
+            <h1 id="view-title">Dashboard</h1>
+            <div class="topbar-subtitle" id="view-subtitle">Resumen del día</div>
           </div>
         </div>
+        <div class="topbar-right">
+          <div id="dash-nav" style="display:none; align-items:center; gap:0.5rem; margin-right:1rem;">
+            <div
+              style="background:var(--surface2); border-radius:6px; display:flex; padding:2px; border:1px solid var(--border)">
+              <button id="btn-view-day"
+                style="padding:4px 12px; font-size:0.75rem; font-weight:600; border-radius:4px; background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,0.1)">Día</button>
+              <button id="btn-view-week"
+                style="padding:4px 12px; font-size:0.75rem; font-weight:600; border-radius:4px; color:var(--text-soft)">Semana</button>
+            </div>
+            <button id="btn-nav-prev"
+              style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:6px; background:var(--surface); cursor:pointer;">‹</button>
+            <button id="btn-nav-next"
+              style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:6px; background:var(--surface); cursor:pointer;">›</button>
+            <span id="dash-date-label"
+              style="font-size:0.85rem; font-weight:600; min-width:140px; text-align:center;"></span>
+            <button id="btn-nav-today"
+              style="padding:4px 12px; font-size:0.75rem; font-weight:600; border:1px solid var(--border); border-radius:6px; background:var(--surface); cursor:pointer; display:none;">Hoy</button>
+          </div>
+          <span class="topbar-date" id="topbar-date"></span>
+          <button class="btn-new" id="btn-new-appt">＋ NUEVA CITA</button>
+        </div>
+      </div>
 
-        <div class="grid-main">
-          <div class="card">
-            <div class="card-hdr">
-              <h3>Citas de hoy</h3><span class="count">6 citas</span>
-            </div>
-            <div class="apt">
-              <div class="apt-time">09:00</div>
-              <div class="apt-bar done"></div>
-              <div class="apt-info">
-                <div class="apt-name">Pedro Garcia</div>
-                <div class="apt-svc">Corte de pelo &middot; 30 min</div>
-              </div><span class="badge badge-done">Hecha</span>
-              <div class="apt-actions"><button class="apt-btn">...</button></div>
-            </div>
-            <div class="apt">
-              <div class="apt-time">10:00</div>
-              <div class="apt-bar done"></div>
-              <div class="apt-info">
-                <div class="apt-name">Carlos Mendez</div>
-                <div class="apt-svc">Corte + Barba &middot; 45 min</div>
-              </div><span class="badge badge-done">Hecha</span>
-              <div class="apt-actions"><button class="apt-btn">...</button></div>
-            </div>
-            <div class="apt">
-              <div class="apt-time">11:30</div>
-              <div class="apt-bar done"></div>
-              <div class="apt-info">
-                <div class="apt-name">Roberto Lopez</div>
-                <div class="apt-svc">Corte de pelo &middot; 30 min</div>
-              </div><span class="badge badge-done">Hecha</span>
-              <div class="apt-actions"><button class="apt-btn">...</button></div>
-            </div>
-            <div class="apt" style="background:var(--amber-bg)">
-              <div class="apt-time" style="color:var(--amber)">12:30</div>
-              <div class="apt-bar now"></div>
-              <div class="apt-info">
-                <div class="apt-name">Miguel A. Torres</div>
-                <div class="apt-svc">Tratamiento capilar &middot; 60 min</div>
-              </div><span class="badge badge-now">Ahora</span>
-              <div class="apt-actions"><button class="apt-btn">&check;</button><button class="apt-btn">&times;</button>
-              </div>
-            </div>
-            <div class="apt">
-              <div class="apt-time">16:00</div>
-              <div class="apt-bar pending"></div>
-              <div class="apt-info">
-                <div class="apt-name">Alejandro Ruiz</div>
-                <div class="apt-svc">Corte + Barba &middot; 45 min</div>
-              </div><span class="badge badge-conf">Confirmada</span>
-              <div class="apt-actions"><button class="apt-btn">&check;</button><button class="apt-btn">&times;</button>
-              </div>
-            </div>
-            <div class="apt">
-              <div class="apt-time">17:30</div>
-              <div class="apt-bar pending"></div>
-              <div class="apt-info">
-                <div class="apt-name">Javier Sanchez</div>
-                <div class="apt-svc">Arreglo de barba &middot; 20 min</div>
-              </div><span class="badge badge-conf">Confirmada</span>
-              <div class="apt-actions"><button class="apt-btn">&check;</button><button class="apt-btn">&times;</button>
-              </div>
-            </div>
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- ═══ DASHBOARD ═══ -->
+        <div class="view active" id="view-dashboard">
+          <!-- KPIs -->
+          <div class="kpi-grid" id="kpi-grid">
+            <!-- populated by JS -->
           </div>
 
-          <div>
-            <div class="card" style="margin-bottom:1rem">
-              <div class="card-hdr">
-                <h3>Ingresos semana</h3>
-              </div>
-              <div class="chart-wrap">
-                <div class="chart-bars">
-                  <div class="bar-col">
-                    <div class="bar-val">72</div>
-                    <div class="bar" style="height:38%;background:var(--dark)"></div>
-                    <div class="bar-label">L</div>
+          <div class="dash-grid">
+            <!-- Calendario -->
+            <div>
+              <div id="dash-calendar"></div>
+            </div>
+
+            <!-- Sidebar widgets -->
+            <div>
+              <div class="widget">
+                <div class="widget-hdr">Ingresos de esta semana</div>
+                <div class="widget-body">
+                  <div class="income-bar">
+                    <div class="income-label"><span>Semana</span><span id="w-weekly">—</span></div>
+                    <div class="bar-track">
+                      <div class="bar-fill" id="bar-weekly" style="width:0%"></div>
+                    </div>
                   </div>
-                  <div class="bar-col">
-                    <div class="bar-val">96</div>
-                    <div class="bar" style="height:52%;background:var(--dark)"></div>
-                    <div class="bar-label">M</div>
+                  <div class="income-bar">
+                    <div class="income-label"><span>Hoy</span><span id="w-today">—</span></div>
+                    <div class="bar-track">
+                      <div class="bar-fill" id="bar-today" style="width:0%"></div>
+                    </div>
                   </div>
-                  <div class="bar-col">
-                    <div class="bar-val">108</div>
-                    <div class="bar" style="height:60%;background:var(--dark)"></div>
-                    <div class="bar-label">X</div>
-                  </div>
-                  <div class="bar-col">
-                    <div class="bar-val">148</div>
-                    <div class="bar" style="height:85%;background:var(--dark)"></div>
-                    <div class="bar-label">J</div>
-                  </div>
-                  <div class="bar-col">
-                    <div class="bar-val">66</div>
-                    <div class="bar" style="height:34%;background:var(--border)"></div>
-                    <div class="bar-label">V</div>
-                  </div>
+                  <div class="widget-row"><span class="widget-k">Total mensual</span><span class="widget-v accent"
+                      id="w-monthly">—</span></div>
+                  <div class="widget-row"><span class="widget-k">Ticket medio</span><span class="widget-v"
+                      id="w-avg">—</span></div>
                 </div>
               </div>
-              <div class="chart-total"><span>Total semana</span><b>490 &euro;</b></div>
-            </div>
-            <div class="card">
-              <div class="card-hdr">
-                <h3>Resumen</h3>
+
+              <div class="widget">
+                <div class="widget-hdr">Próxima cita</div>
+                <div class="widget-body" id="next-appt-widget">
+                  <div class="empty" style="padding:1rem"></div>
+                </div>
               </div>
-              <div class="qs"><span class="qs-label">Servicio mas popular</span><span class="qs-val">Corte +
-                  Barba</span></div>
-              <div class="qs"><span class="qs-label">Hora mas ocupada</span><span class="qs-val">10:00 - 12:00</span>
+
+              <div class="widget">
+                <div class="widget-hdr">Estado del día</div>
+                <div class="widget-body">
+                  <div class="widget-row"><span class="widget-k">Total citas</span><span class="widget-v"
+                      id="w-total-today">0</span></div>
+                  <div class="widget-row"><span class="widget-k">Completadas</span><span class="widget-v"
+                      id="w-done">0</span></div>
+                  <div class="widget-row"><span class="widget-k">Pendientes</span><span class="widget-v"
+                      id="w-pending">0</span></div>
+                  <div class="widget-row"><span class="widget-k">Canceladas</span><span class="widget-v"
+                      id="w-cancelled">0</span></div>
+                </div>
               </div>
-              <div class="qs"><span class="qs-label">Nuevos clientes</span><span class="qs-val">4</span></div>
-              <div class="qs"><span class="qs-label">Ocupacion hoy</span><span class="qs-val"
-                  style="color:var(--green)">85%</span></div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- SERVICIOS -->
-      <div class="tab-content" id="tc-servicios">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
-          <p style="font-size:.82rem;color:var(--text-soft)">Gestiona los servicios que ofreces</p>
-          <button class="btn-sm dark">+ Nuevo servicio</button>
-        </div>
-        <div class="card">
-          <table class="tbl">
-            <thead>
-              <tr>
-                <th>Servicio</th>
-                <th>Precio</th>
-                <th>Duracion</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="dot-active"></span>Corte de pelo</td>
-                <td class="price">18 &euro;</td>
-                <td class="muted">30 min</td>
-                <td><span class="badge badge-done">Activo</span></td>
-                <td>
-                  <div class="tbl-actions"><button class="tbl-btn">Editar</button><button
-                      class="tbl-btn">Borrar</button></div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="dot-active"></span>Arreglo de barba</td>
-                <td class="price">12 &euro;</td>
-                <td class="muted">20 min</td>
-                <td><span class="badge badge-done">Activo</span></td>
-                <td>
-                  <div class="tbl-actions"><button class="tbl-btn">Editar</button><button
-                      class="tbl-btn">Borrar</button></div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="dot-active"></span>Corte + Barba</td>
-                <td class="price">25 &euro;</td>
-                <td class="muted">45 min</td>
-                <td><span class="badge badge-done">Activo</span></td>
-                <td>
-                  <div class="tbl-actions"><button class="tbl-btn">Editar</button><button
-                      class="tbl-btn">Borrar</button></div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="dot-active"></span>Tratamiento capilar</td>
-                <td class="price">35 &euro;</td>
-                <td class="muted">60 min</td>
-                <td><span class="badge badge-done">Activo</span></td>
-                <td>
-                  <div class="tbl-actions"><button class="tbl-btn">Editar</button><button
-                      class="tbl-btn">Borrar</button></div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="dot-inactive"></span>Tinte</td>
-                <td class="price">40 &euro;</td>
-                <td class="muted">90 min</td>
-                <td><span class="badge"
-                    style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)">Inactivo</span>
-                </td>
-                <td>
-                  <div class="tbl-actions"><button class="tbl-btn">Editar</button><button
-                      class="tbl-btn">Borrar</button></div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- CLIENTES -->
-      <div class="tab-content" id="tc-clientes">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
-          <p style="font-size:.82rem;color:var(--text-soft)">Base de clientes de tu barbería</p>
-          <input type="text" placeholder="Buscar cliente..."
-            style="padding:.45rem .875rem;border-radius:6px;border:1px solid var(--border);background:var(--white);font-family:inherit;font-size:.78rem;width:200px;color:var(--text)">
-        </div>
-        <div class="card">
-          <table class="tbl">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Telefono</th>
-                <th>Citas totales</th>
-                <th>Ultima cita</th>
-                <th>Notas</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight:600">Pedro Garcia</td>
-                <td class="muted">+34 612 345 678</td>
-                <td style="font-weight:700">12</td>
-                <td class="muted">Hoy, 09:00</td>
-                <td class="muted">Corte degradado</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600">Carlos Mendez</td>
-                <td class="muted">+34 623 456 789</td>
-                <td style="font-weight:700">8</td>
-                <td class="muted">Hoy, 10:00</td>
-                <td class="muted">&mdash;</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600">Roberto Lopez</td>
-                <td class="muted">+34 634 567 890</td>
-                <td style="font-weight:700">15</td>
-                <td class="muted">Hoy, 11:30</td>
-                <td class="muted">Cliente VIP</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600">Miguel A. Torres</td>
-                <td class="muted">+34 645 678 901</td>
-                <td style="font-weight:700">3</td>
-                <td class="muted">Hoy, 12:30</td>
-                <td class="muted">Alergico a tintes</td>
-              </tr>
-              <tr>
-                <td style="font-weight:600">Alejandro Ruiz</td>
-                <td class="muted">+34 656 789 012</td>
-                <td style="font-weight:700">6</td>
-                <td class="muted">Hoy, 16:00</td>
-                <td class="muted">Prefiere tijera</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- AGENDA -->
-      <div class="tab-content" id="tc-agenda">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
-          <p style="font-size:.82rem;color:var(--text-soft)">Vista semanal de tu agenda</p>
-          <div style="display:flex;gap:.35rem">
-            <button class="btn-sm">Anterior</button>
-            <span class="topbar-date" id="tdAgendaDate">Semana</span>
-            <button class="btn-sm">Siguiente</button>
+        <!-- ═══ AGENDA ═══ -->
+        <div class="view" id="view-agenda">
+          <div class="sec-hdr">
+            <div class="sec-hdr-left">
+              <h2>Agenda de citas</h2>
+              <p>Gestiona y filtra todas las citas</p>
+            </div>
+            <div class="sec-hdr-actions">
+              <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="agenda-search" placeholder="Buscar cliente o servicio…">
+              </div>
+              <select class="filter-select" id="agenda-filter-status">
+                <option value="">Todos los estados</option>
+                <option value="pending">Pendiente</option>
+                <option value="active">En curso</option>
+                <option value="done">Completada</option>
+                <option value="cancelled">Cancelada</option>
+                <option value="noshow">No show</option>
+              </select>
+              <input type="date" class="filter-select" id="agenda-filter-date"
+                style="padding:.5rem .75rem;font-size:.78rem;">
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha / Hora</th>
+                  <th>Cliente</th>
+                  <th>Servicio</th>
+                  <th>Duración</th>
+                  <th>Importe</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="agenda-tbody"></tbody>
+            </table>
           </div>
         </div>
-        <div class="card" style="padding:0">
-          <div style="display:grid;grid-template-columns:56px repeat(5,1fr);border-collapse:collapse">
-            <div
-              style="padding:.6rem;font-size:.65rem;color:var(--text-soft);border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg)">
-            </div>
-            <div id="ath1"
-              style="padding:.6rem;text-align:center;font-size:.7rem;font-weight:700;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg)">
-              Lun</div>
-            <div id="ath2"
-              style="padding:.6rem;text-align:center;font-size:.7rem;font-weight:700;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg)">
-              Mar</div>
-            <div id="ath3"
-              style="padding:.6rem;text-align:center;font-size:.7rem;font-weight:700;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg)">
-              Mie</div>
-            <div id="ath4"
-              style="padding:.6rem;text-align:center;font-size:.7rem;font-weight:700;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--amber-bg);color:var(--amber)">
-              Jue</div>
-            <div id="ath5"
-              style="padding:.6rem;text-align:center;font-size:.7rem;font-weight:700;border-bottom:1px solid var(--border);background:var(--bg)">
-              Vie</div>
 
-            <div
-              style="padding:.5rem;font-size:.65rem;color:var(--text-soft);text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              09:00</div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--green-bg);border-left:2px solid var(--green);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Pedro G.</b><br><span style="color:var(--text-soft)">Corte</span></div>
+        <!-- ═══ CLIENTES ═══ -->
+        <div class="view" id="view-clients">
+          <div class="sec-hdr">
+            <div class="sec-hdr-left">
+              <h2>Base de clientes</h2>
+              <p id="clients-count">0 clientes registrados</p>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
+            <div class="sec-hdr-actions">
+              <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="clients-search" placeholder="Buscar…">
+              </div>
+              <select class="filter-select" id="clients-filter-tag">
+                <option value="">Todas las etiquetas</option>
+                <option value="vip">VIP</option>
+                <option value="new">Nuevo</option>
+                <option value="frequent">Frecuente</option>
+              </select>
+              <button class="btn btn-primary" id="btn-new-client">+ Nuevo cliente</button>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--blue-bg);border-left:2px solid var(--blue);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Ana R.</b><br><span style="color:var(--text-soft)">Corte+Barba</span></div>
-            </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--green-bg);border-left:2px solid var(--green);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Luis M.</b><br><span style="color:var(--text-soft)">Corte</span></div>
-            </div>
-            <div style="padding:.3rem;border-bottom:1px solid var(--border-light)"></div>
+          </div>
+          <div class="client-grid" id="clients-grid"></div>
+        </div>
 
-            <div
-              style="padding:.5rem;font-size:.65rem;color:var(--text-soft);text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              10:00</div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--blue-bg);border-left:2px solid var(--blue);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Carlos M.</b><br><span style="color:var(--text-soft)">Corte+Barba</span></div>
+        <!-- ═══ SERVICIOS ═══ -->
+        <div class="view" id="view-services">
+          <div class="sec-hdr">
+            <div class="sec-hdr-left">
+              <h2>Catálogo de servicios</h2>
+              <p>Gestiona precios y duraciones</p>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--amber-bg);border-left:2px solid var(--amber);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>David P.</b><br><span style="color:var(--text-soft)">Barba</span></div>
+            <div class="sec-hdr-actions">
+              <button class="btn btn-primary" id="btn-new-service">+ Nuevo servicio</button>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-            </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--blue-bg);border-left:2px solid var(--blue);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Pablo V.</b><br><span style="color:var(--text-soft)">Corte+Barba</span></div>
-            </div>
-            <div style="padding:.3rem;border-bottom:1px solid var(--border-light)">
-              <div
-                style="background:var(--green-bg);border-left:2px solid var(--green);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Marco F.</b><br><span style="color:var(--text-soft)">Corte</span></div>
-            </div>
+          </div>
+          <div class="service-grid" id="services-grid"></div>
+        </div>
 
-            <div
-              style="padding:.5rem;font-size:.65rem;color:var(--text-soft);text-align:center;border-right:1px solid var(--border)">
-              11:00</div>
-            <div style="padding:.3rem;border-right:1px solid var(--border)"></div>
-            <div style="padding:.3rem;border-right:1px solid var(--border)">
-              <div
-                style="background:var(--green-bg);border-left:2px solid var(--green);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Raul G.</b><br><span style="color:var(--text-soft)">Corte</span></div>
+        <!-- ═══ INFORMES ═══ -->
+        <div class="view" id="view-reports">
+          <div class="rep-grid" id="rep-kpi-grid"></div>
+          <div class="sec-hdr" style="margin-top:1rem">
+            <div class="sec-hdr-left">
+              <h2>Ingresos por día (últimos 7 días)</h2>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border)">
-              <div
-                style="background:var(--amber-bg);border-left:2px solid var(--amber);border-radius:4px;padding:.3rem .5rem;font-size:.62rem">
-                <b>Tomas L.</b><br><span style="color:var(--text-soft)">Tratamiento</span></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);padding:1.25rem">
+            <div class="bar-chart" id="bar-chart"></div>
+          </div>
+
+          <div class="sec-hdr" style="margin-top:1.5rem">
+            <div class="sec-hdr-left">
+              <h2>Servicios más solicitados</h2>
             </div>
-            <div style="padding:.3rem;border-right:1px solid var(--border)"></div>
-            <div style="padding:.3rem"></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Servicio</th>
+                  <th>Citas</th>
+                  <th>Ingresos</th>
+                  <th>% del total</th>
+                </tr>
+              </thead>
+              <tbody id="rep-services-tbody"></tbody>
+            </table>
           </div>
         </div>
-      </div>
 
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /layout -->
+
+  <!-- ═══ MODALS ═══ -->
+
+  <!-- Appointment Modal -->
+  <div class="modal-overlay" id="modal-appt">
+    <div class="modal">
+      <div class="modal-hdr">
+        <h3 id="modal-appt-title">Nueva cita</h3>
+        <button class="modal-close" data-close="modal-appt">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="appt-id">
+        <div class="fgrow">
+          <div class="fg">
+            <label>Cliente <span style="color:var(--gold)">*</span></label>
+            <div style="position:relative">
+              <input type="text" id="appt-client-name" placeholder="Nombre del cliente…" autocomplete="off">
+              <input type="hidden" id="appt-client-id">
+              <div id="appt-client-suggestions" style="
+                position:absolute; z-index:600; background:var(--surface);
+                border:1px solid var(--border-2); border-top:none; max-height:160px; 
+                overflow-y:auto; width:100%; display:none;
+              "></div>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Servicio <span style="color:var(--gold)">*</span></label>
+            <select id="appt-service">
+              <option value="">Seleccionar…</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgrow">
+          <div class="fg">
+            <label>Fecha <span style="color:var(--gold)">*</span></label>
+            <input type="date" id="appt-date">
+          </div>
+          <div class="fg">
+            <label>Hora <span style="color:var(--gold)">*</span></label>
+            <input type="time" id="appt-time" value="10:00">
+          </div>
+        </div>
+        <div class="fgrow">
+          <div class="fg">
+            <label>Estado</label>
+            <select id="appt-status">
+              <option value="pending">Pendiente</option>
+              <option value="active">En curso</option>
+              <option value="done">Completada</option>
+              <option value="cancelled">Cancelada</option>
+              <option value="noshow">No show</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Importe (€)</label>
+            <input type="number" id="appt-price" placeholder="Auto desde servicio" min="0" step="0.5">
+          </div>
+        </div>
+        <div class="fg">
+          <label>Notas internas</label>
+          <textarea id="appt-notes" placeholder="Preferencias, información adicional…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modal-appt">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-appt">Guardar cita</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    function showTab(name, ev) {
-      document.querySelectorAll('.tab-content').forEach(function (t) { t.classList.remove('active') });
-      document.querySelectorAll('.sb-item').forEach(function (n) { n.classList.remove('active') });
-      var tc = document.getElementById('tc-' + name);
-      if (tc) tc.classList.add('active');
-      if (ev && ev.currentTarget) {
-        ev.currentTarget.classList.add('active');
-      } else if (!ev) {
-        // Escenario fallback: si se llama sin evento (ej. manualmente desde consola)
-        var items = document.querySelectorAll('.sb-item');
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].textContent.toLowerCase().includes(name.toLowerCase())) {
-            items[i].classList.add('active');
-            break;
-          }
-        }
-      }
-      var titles = { dashboard: 'Dashboard', agenda: 'Agenda', servicios: 'Servicios', clientes: 'Clientes' };
-      document.getElementById('topTitle').textContent = titles[name] || name;
-      document.querySelector('.sidebar').classList.remove('open');
-    }
-
-    // Fechas dinámicas
-    var MO = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    var dl = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    var dlFull = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-
-    var t = new Date();
-    if (document.getElementById('mDateInput')) {
-      document.getElementById('mDateInput').value = t.toISOString().split('T')[0];
-    }
-    document.getElementById('tdDate').textContent = dlFull[t.getDay()] + ", " + t.getDate() + " " + MO[t.getMonth()] + " " + t.getFullYear();
-
-    function rAdminCal() {
-      var d = new Date();
-      var p = new Date(d); p.setDate(d.getDate() - d.getDay() + 1); // Lunes
-      var f = new Date(d); f.setDate(p.getDate() + 4); // Viernes
-
-      var wT = p.getDate() + " " + MO[p.getMonth()].substring(0, 3) + " — " + f.getDate() + " " + MO[f.getMonth()].substring(0, 3) + " " + f.getFullYear();
-      document.getElementById('tdAgendaDate').textContent = wT;
-
-      for (var i = 1; i <= 5; i++) {
-        var th = document.getElementById('ath' + i);
-        if (th) th.textContent = dl[i] + " " + p.getDate();
-        p.setDate(p.getDate() + 1);
-      }
-    }
-    rAdminCal();
-  </script>
-  <!-- WIDGET NAVEGADOR DEMO -->
-  <div
-    style="position:fixed;bottom:20px;right:20px;z-index:9999;background:#141414;border:1px solid rgba(212,175,55,0.3);border-radius:50px;padding:5px;display:flex;gap:2px;box-shadow:0 8px 24px rgba(0,0,0,0.8);">
-    <div
-      style="padding:0 10px;display:flex;align-items:center;font-size:0.6rem;color:#D4AF37;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;border-right:1px solid rgba(212,175,55,0.2);margin-right:2px">
-      Navegador Demo</div>
-    <a href="index.html"
-      style="text-decoration:none;color:#f5f0e8;font-size:0.75rem;font-weight:600;padding:6px 14px;border-radius:30px;transition:0.2s;"
-      onmouseover="this.style.background='rgba(212,175,55,0.15)';this.style.color='#D4AF37'"
-      onmouseout="this.style.background='transparent';this.style.color='#f5f0e8'">Landing</a>
-    <a href="reservar.html"
-      style="text-decoration:none;color:#f5f0e8;font-size:0.75rem;font-weight:600;padding:6px 14px;border-radius:30px;transition:0.2s;"
-      onmouseover="this.style.background='rgba(212,175,55,0.15)';this.style.color='#D4AF37'"
-      onmouseout="this.style.background='transparent';this.style.color='#f5f0e8'">Cliente</a>
-    <a href="panel.html"
-      style="text-decoration:none;color:#f5f0e8;font-size:0.75rem;font-weight:600;padding:6px 14px;border-radius:30px;transition:0.2s;"
-      onmouseover="this.style.background='rgba(212,175,55,0.15)';this.style.color='#D4AF37'"
-      onmouseout="this.style.background='transparent';this.style.color='#f5f0e8'">Panel</a>
+  <!-- Client Modal -->
+  <div class="modal-overlay" id="modal-client">
+    <div class="modal">
+      <div class="modal-hdr">
+        <h3 id="modal-client-title">Nuevo cliente</h3>
+        <button class="modal-close" data-close="modal-client">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="client-id">
+        <div class="fgrow">
+          <div class="fg"><label>Nombre <span style="color:var(--gold)">*</span></label><input type="text"
+              id="client-name" placeholder="Nombre completo"></div>
+          <div class="fg"><label>Teléfono</label><input type="tel" id="client-phone" placeholder="+34 600 000 000">
+          </div>
+        </div>
+        <div class="fgrow">
+          <div class="fg"><label>Email</label><input type="email" id="client-email" placeholder="email@ejemplo.com">
+          </div>
+          <div class="fg">
+            <label>Etiqueta</label>
+            <select id="client-tag">
+              <option value="">Sin etiqueta</option>
+              <option value="new">Nuevo</option>
+              <option value="frequent">Frecuente</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Notas internas</label><textarea id="client-notes"
+            placeholder="Preferencias de corte, alergias, etc."></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modal-client">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-client">Guardar cliente</button>
+      </div>
+    </div>
   </div>
 
+  <!-- Service Modal -->
+  <div class="modal-overlay" id="modal-service">
+    <div class="modal">
+      <div class="modal-hdr">
+        <h3 id="modal-service-title">Nuevo servicio</h3>
+        <button class="modal-close" data-close="modal-service">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="svc-id">
+        <div class="fg"><label>Nombre <span style="color:var(--gold)">*</span></label><input type="text" id="svc-name"
+            placeholder="Nombre del servicio"></div>
+        <div class="fgrow">
+          <div class="fg"><label>Precio (€)</label><input type="number" id="svc-price" min="0" step="0.5"
+              placeholder="0.00"></div>
+          <div class="fg"><label>Duración (min)</label><input type="number" id="svc-dur" min="5" step="5"
+              placeholder="30"></div>
+        </div>
+        <div class="fg"><label>Descripción</label><textarea id="svc-desc" placeholder="Breve descripción…"></textarea>
+        </div>
+        <div class="fg">
+          <label>Estado</label>
+          <select id="svc-active">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modal-service">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-service">Guardar servicio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal" style="max-width:380px">
+      <div class="modal-hdr">
+        <h3>Confirmar acción</h3>
+        <button class="modal-close" data-close="modal-confirm">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:.85rem;color:var(--text-soft);line-height:1.7" id="confirm-msg">¿Estás seguro?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modal-confirm">Cancelar</button>
+        <button class="btn btn-danger" id="btn-confirm-ok">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ══════════════════════════════════════════════════════
+         DATA LAYER — Estructura de datos inicial + localStorage
+      ══════════════════════════════════════════════════════ */
+      const today = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+      const ystISO = (() => { const d = new Date(today); d.setDate(d.getDate() - 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })();
+
+      const SEED_SERVICES = [
+        { id: 's1', name: 'Corte clásico', price: 18, duration: 30, desc: 'Estructura y precisión. El corte de siempre.', active: true },
+        { id: 's2', name: 'Perfilado de barba', price: 12, duration: 20, desc: 'Diseño y perfilado con navaja para barba definida.', active: true },
+        { id: 's3', name: 'Corte + Barba', price: 25, duration: 45, desc: 'La experiencia completa. Corte y perfilado de barba.', active: true },
+        { id: 's4', name: 'Tratamiento capilar', price: 35, duration: 60, desc: 'Nutrición, hidratación y cuidado capilar premium.', active: true },
+        { id: 's5', name: 'Afeitado artesanal', price: 22, duration: 35, desc: 'Navaja, espuma caliente y ritual clásico de afeitado.', active: true },
+      ];
+
+      const SEED_CLIENTS = [
+        { id: 'c1', name: 'Alejandro Martínez', phone: '+34 611 111 001', email: 'ale@mail.com', tag: 'frequent', notes: 'Prefiere corte clásico con raya a la derecha.' },
+        { id: 'c2', name: 'Carlos Ruiz', phone: '+34 611 111 002', email: 'carlos@mail.com', tag: 'vip', notes: 'Cliente desde 2019. VIP. Le gusta la navaja para la barba.' },
+        { id: 'c3', name: 'Marco López', phone: '+34 611 111 003', email: 'marco@mail.com', tag: 'new', notes: 'Primera visita. Viene recomendado.' },
+        { id: 'c4', name: 'Jorge Sánchez', phone: '+34 611 111 004', email: '', tag: 'frequent', notes: 'Viene cada 3 semanas. Corte + barba siempre.' },
+        { id: 'c5', name: 'Rafael García', phone: '+34 611 111 005', email: 'rafa@mail.com', tag: 'vip', notes: 'Exige máxima puntualidad. Siempre trae propina.' },
+        { id: 'c6', name: 'Iván Torres', phone: '+34 611 111 006', email: '', tag: '', notes: '' },
+      ];
+
+      function makeAppt(id, clientId, serviceId, date, time, status, notes = '') {
+        const svc = SEED_SERVICES.find(s => s.id === serviceId);
+        return { id, clientId, serviceId, date, time, status, price: svc ? svc.price : 0, notes };
+      }
+
+      const SEED_APPTS = [
+        makeAppt('a1', 'c2', 's3', todayISO, '09:00', 'done', 'Cliente habitual. Vino puntual.'),
+        makeAppt('a2', 'c1', 's1', todayISO, '10:00', 'done', ''),
+        makeAppt('a3', 'c4', 's3', todayISO, '11:00', 'active', ''),
+        makeAppt('a4', 'c5', 's5', todayISO, '12:00', 'pending', ''),
+        makeAppt('a5', 'c3', 's2', todayISO, '13:00', 'pending', 'Primera visita.'),
+        makeAppt('a6', 'c6', 's1', todayISO, '16:00', 'pending', ''),
+        makeAppt('a7', 'c1', 's4', ystISO, '10:00', 'done', ''),
+        makeAppt('a8', 'c2', 's5', ystISO, '11:30', 'done', ''),
+        makeAppt('a9', 'c4', 's3', ystISO, '13:00', 'noshow', ''),
+        makeAppt('a10', 'c5', 's1', ystISO, '17:00', 'done', ''),
+        makeAppt('a11', 'c3', 's2', (() => { const d = new Date(today); d.setDate(d.getDate() - 2); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })(), '10:00', 'done', ''),
+        makeAppt('a12', 'c1', 's1', (() => { const d = new Date(today); d.setDate(d.getDate() - 3); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })(), '11:00', 'done', ''),
+        makeAppt('a13', 'c2', 's3', (() => { const d = new Date(today); d.setDate(d.getDate() - 4); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })(), '09:30', 'done', ''),
+        makeAppt('a14', 'c4', 's5', (() => { const d = new Date(today); d.setDate(d.getDate() - 5); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })(), '12:00', 'cancelled', ''),
+        makeAppt('a15', 'c5', 's4', (() => { const d = new Date(today); d.setDate(d.getDate() - 6); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; })(), '10:00', 'done', ''),
+      ];
+
+      /* ── Storage helpers ── */
+      const LS = {
+        get: key => { try { return JSON.parse(localStorage.getItem('crm_' + key)); } catch { return null; } },
+        set: (key, val) => localStorage.setItem('crm_' + key, JSON.stringify(val)),
+      };
+
+      /* ── State (mini-store) ── */
+      const DB = {
+        services: LS.get('services') || JSON.parse(JSON.stringify(SEED_SERVICES)),
+        clients: LS.get('clients') || JSON.parse(JSON.stringify(SEED_CLIENTS)),
+        appointments: LS.get('appointments') || JSON.parse(JSON.stringify(SEED_APPTS)),
+      };
+
+      const persist = () => {
+        LS.set('services', DB.services);
+        LS.set('clients', DB.clients);
+        LS.set('appointments', DB.appointments);
+      };
+
+      /* ── ID generator ── */
+      const genId = prefix => prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+      /* ══════════════════════════════════════════════════════
+         HELPERS
+      ══════════════════════════════════════════════════════ */
+      const $ = (s, ctx = document) => ctx.querySelector(s);
+      const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
+      const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+
+      const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      const DAYS_ES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+      const fmtDate = iso => {
+        if (!iso) return '—';
+        const [y, m, d] = iso.split('-').map(Number);
+        return `${d} de ${MONTHS_ES[m - 1]} de ${y}`;
+      };
+      const fmtDateTime = (date, time) => `${fmtDate(date)} · ${time}`;
+      const fmtPrice = p => `${Number(p).toFixed(2).replace('.', ',')}€`;
+
+      const getClient = id => DB.clients.find(c => c.id === id);
+      const getService = id => DB.services.find(s => s.id === id);
+
+      const statusLabel = s => ({ pending: 'Pendiente', active: 'En curso', done: 'Completada', cancelled: 'Cancelada', noshow: 'No show' }[s] || s);
+      const pillClass = s => 'pill pill-' + s;
+
+      const toast = (msg, icon = '✓') => {
+        const el = $('#toast');
+        el.innerHTML = `<span class="toast-icon">${icon}</span>${msg}`;
+        el.classList.add('show');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove('show'), 2800);
+      };
+
+      /* ══════════════════════════════════════════════════════
+         NAVIGATION
+      ══════════════════════════════════════════════════════ */
+      const VIEW_META = {
+        dashboard: { title: 'Dashboard', subtitle: 'Resumen del día' },
+        agenda: { title: 'Agenda', subtitle: 'Gestión de citas' },
+        clients: { title: 'Clientes', subtitle: 'Base de clientes' },
+        services: { title: 'Servicios', subtitle: 'Catálogo de servicios' },
+        reports: { title: 'Informes', subtitle: 'KPIs y estadísticas' },
+      };
+
+      let currentView = 'dashboard';
+
+      function showView(name) {
+        currentView = name;
+        $$('.view').forEach(v => v.classList.remove('active'));
+        $$('.sb-item').forEach(i => i.classList.remove('active'));
+        const el = $(`#view-${name}`);
+        if (el) el.classList.add('active');
+        const sb = $(`.sb-item[data-view="${name}"]`);
+        if (sb) sb.classList.add('active');
+        const meta = VIEW_META[name];
+        if (meta) {
+          $('#view-title').textContent = meta.title;
+          $('#view-subtitle').textContent = meta.subtitle;
+        }
+
+        if ($('#dash-nav')) $('#dash-nav').style.display = name === 'dashboard' ? 'flex' : 'none';
+        if ($('#topbar-date')) $('#topbar-date').style.display = name === 'dashboard' ? 'none' : 'block';
+
+        renderView(name);
+        closeSidebar();
+      }
+
+      $$('.sb-item[data-view]').forEach(item => {
+        on(item, 'click', e => { e.preventDefault(); showView(item.dataset.view); });
+      });
+
+      /* ══════════════════════════════════════════════════════
+         SIDEBAR MOBILE
+      ══════════════════════════════════════════════════════ */
+      const openSidebar = () => { $('#sidebar').classList.add('open'); $('#overlay').classList.add('visible'); };
+      const closeSidebar = () => { $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('visible'); };
+      on($('#hamburger'), 'click', openSidebar);
+      on($('#overlay'), 'click', closeSidebar);
+
+      /* ══════════════════════════════════════════════════════
+         TOPBAR DATE
+      ══════════════════════════════════════════════════════ */
+      $('#topbar-date').textContent = `${DAYS_ES[today.getDay()].charAt(0).toUpperCase() + DAYS_ES[today.getDay()].slice(1)}, ${today.getDate()} ${MONTHS_ES[today.getMonth()]}`;
+
+      /* ══════════════════════════════════════════════════════
+         MODALS
+      ══════════════════════════════════════════════════════ */
+      const openModal = id => { const m = $(`#${id}`); m.classList.add('open'); };
+      const closeModal = id => { const m = $(`#${id}`); m.classList.remove('open'); };
+
+      $$('[data-close]').forEach(btn => on(btn, 'click', () => closeModal(btn.dataset.close)));
+      $$('.modal-overlay').forEach(m => on(m, 'click', e => { if (e.target === m) closeModal(m.id); }));
+      on(document, 'keydown', e => { if (e.key === 'Escape') $$('.modal-overlay.open').forEach(m => closeModal(m.id)); });
+
+      /* ══════════════════════════════════════════════════════
+         ANALYTICS HELPERS
+      ══════════════════════════════════════════════════════ */
+      const income = appts => appts.filter(a => a.status === 'done').reduce((s, a) => s + Number(a.price), 0);
+
+      const todayAppts = () => DB.appointments.filter(a => a.date === todayISO);
+      const weekAppts = () => {
+        const sevenAgo = new Date(today); sevenAgo.setDate(today.getDate() - 7);
+        return DB.appointments.filter(a => new Date(a.date) >= sevenAgo && new Date(a.date) <= today);
+      };
+      const monthAppts = () => {
+        return DB.appointments.filter(a => {
+          const d = new Date(a.date);
+          return d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth();
+        });
+      };
+
+      /* ══════════════════════════════════════════════════════
+         RENDER DISPATCHER
+      ══════════════════════════════════════════════════════ */
+      function renderView(name) {
+        if (name === 'dashboard') renderDashboard();
+        if (name === 'agenda') renderAgenda();
+        if (name === 'clients') renderClients();
+        if (name === 'services') renderServices();
+        if (name === 'reports') renderReports();
+      }
+
+      /* ══════════════════════════════════════════════════════
+         DASHBOARD
+      ══════════════════════════════════════════════════════ */
+      // Funciones para la agenda semanal
+      let dashSelectedDate = new Date(today);
+      let dashViewType = 'day';
+
+      // Navegación
+      setTimeout(() => { // Esperar a DOM load
+        on($('#btn-view-day'), 'click', () => { dashViewType = 'day'; renderDashboard(); });
+        on($('#btn-view-week'), 'click', () => { dashViewType = 'week'; renderDashboard(); });
+        on($('#btn-nav-prev'), 'click', () => {
+          dashSelectedDate.setDate(dashSelectedDate.getDate() - (dashViewType === 'week' ? 7 : 1));
+          renderDashboard();
+        });
+        on($('#btn-nav-next'), 'click', () => {
+          dashSelectedDate.setDate(dashSelectedDate.getDate() + (dashViewType === 'week' ? 7 : 1));
+          renderDashboard();
+        });
+        on($('#btn-nav-today'), 'click', () => {
+          dashSelectedDate = new Date(today);
+          renderDashboard();
+        });
+      }, 0);
+
+      const SVC_COLORS = [
+        { bg: '#EBF4FF', border: '#3B82F6', text: '#1E40AF' },
+        { bg: '#F0FDF4', border: '#22C55E', text: '#166534' },
+        { bg: '#FFFBEB', border: '#F59E0B', text: '#92400E' },
+        { bg: '#FDF4FF', border: '#A855F7', text: '#6B21A8' },
+        { bg: '#FFF1F2', border: '#F43F5E', text: '#9F1239' }
+      ];
+
+      function renderDashboard() {
+        if (!$('#btn-nav-today')) return;
+
+        const isToday = dashSelectedDate.toDateString() === today.toDateString();
+        $('#btn-nav-today').style.display = isToday ? 'none' : 'block';
+
+        if (dashViewType === 'day') {
+          $('#btn-view-day').style.background = 'var(--surface)';
+          $('#btn-view-day').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+          $('#btn-view-day').style.color = 'var(--text)';
+          $('#btn-view-week').style.background = 'transparent';
+          $('#btn-view-week').style.boxShadow = 'none';
+          $('#btn-view-week').style.color = 'var(--text-soft)';
+        } else {
+          $('#btn-view-week').style.background = 'var(--surface)';
+          $('#btn-view-week').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+          $('#btn-view-week').style.color = 'var(--text)';
+          $('#btn-view-day').style.background = 'transparent';
+          $('#btn-view-day').style.boxShadow = 'none';
+          $('#btn-view-day').style.color = 'var(--text-soft)';
+        }
+
+        // Determinar periodo
+        let dates = [];
+        if (dashViewType === 'day') {
+          dates.push(new Date(dashSelectedDate));
+          $('#dash-date-label').textContent = `${DAYS_ES[dashSelectedDate.getDay()].charAt(0).toUpperCase() + DAYS_ES[dashSelectedDate.getDay()].slice(1)}, ${dashSelectedDate.getDate()} ${MONTHS_ES[dashSelectedDate.getMonth()]}`;
+        } else {
+          // Obtener el lunes de esta semana
+          const d = new Date(dashSelectedDate);
+          const day = d.getDay();
+          const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+          d.setDate(diff);
+          for (let i = 0; i < 7; i++) {
+            dates.push(new Date(d));
+            d.setDate(d.getDate() + 1);
+          }
+          const start = dates[0];
+          const end = dates[6];
+          $('#dash-date-label').textContent = `${start.getDate()} — ${end.getDate()} ${MONTHS_ES[end.getMonth()]}`;
+        }
+
+        // Obtener citas
+        const isoDates = dates.map(d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
+        let periodAppts = DB.appointments.filter(a => isoDates.includes(a.date));
+
+        $('#badge-agenda').textContent = DB.appointments.filter(a => a.date === todayISO && (a.status === 'pending' || a.status === 'active')).length;
+
+        const totalAppts = periodAppts.length;
+        const doneAppts = periodAppts.filter(a => a.status === 'done').length;
+        const pendingAppts = periodAppts.filter(a => a.status === 'pending' || a.status === 'active').length;
+        const noshowAppts = periodAppts.filter(a => a.status === 'noshow').length;
+        const perf = totalAppts > 0 ? Math.round((doneAppts / totalAppts) * 100) : 0;
+
+        // Render KPIs
+        $('#kpi-grid').innerHTML = `
+          <div class="kpi-card" style="grid-column: span 1;">
+            <div class="kpi-label">TOTAL CITAS ${dashViewType === 'day' ? 'DEL DÍA' : 'DE LA SEMANA'}</div>
+            <div class="kpi-value">${totalAppts}</div>
+            <div class="kpi-sub">${doneAppts} completadas · ${pendingAppts} pendientes</div>
+          </div>
+          <div class="kpi-card" style="grid-column: span 1;">
+            <div class="kpi-label">PROGRESO</div>
+            <div class="kpi-value">${perf}%</div>
+            <div style="height:3px; background:var(--surface2); margin-top:8px; border-radius:1.5px; overflow:hidden">
+              <div style="height:100%; width:${perf}%; background:var(--gold); transition:width 0.5s"></div>
+            </div>
+          </div>
+          <div class="kpi-card" style="grid-column: span 1;">
+            <div class="kpi-label">NO-SHOWS DE ${dashViewType === 'day' ? 'HOY' : 'LA SEMANA'}</div>
+            <div class="kpi-value" style="color:${noshowAppts > 0 ? 'var(--red)' : 'var(--text)'}">${noshowAppts}</div>
+            <div class="kpi-sub">Citas perdidas en el periodo</div>
+          </div>
+        `;
+        $('#kpi-grid').style.gridTemplateColumns = 'repeat(3, 1fr)';
+
+        // Render Calendar
+        let calHtml = `<div class="cal-wrap"><div class="cal-header"><div class="cal-header-spacer"></div><div class="cal-header-days">`;
+
+        dates.forEach(d => {
+          const isT = d.toDateString() === today.toDateString();
+          const dayName = DAYS_ES[d.getDay()].substring(0, 3);
+          const dStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T12:00:00`;
+          if (dashViewType === 'week') {
+            const dateIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+            calHtml += `<div class="cal-header-day" style="cursor:pointer" onclick="goToDay('${dateIso}')">
+              <span style="font-size:0.65rem">${dayName}</span>
+              ${isT ? `<div style="width:24px; height:24px; border-radius:50%; background:var(--gold); color:white; display:flex; align-items:center; justify-content:center; font-size:1rem; margin-top:4px;">${d.getDate()}</div>` : `<span style="font-size:1.1rem; color:var(--text); margin-top:4px; margin-bottom:4px;">${d.getDate()}</span>`}
+            </div>`;
+          } else {
+            calHtml += `<div class="cal-header-day">
+              <span style="font-size:0.65rem">${dayName}</span>
+              <span style="font-size:1.1rem; color:var(--text)">${d.getDate()}</span>
+            </div>`;
+          }
+        });
+        calHtml += `</div></div>`;
+
+        calHtml += `<div class="cal-body">
+          <div class="cal-hours">`;
+        for (let h = 8; h <= 20; h++) {
+          calHtml += `<div class="cal-hour-label">${pad(h)}:00</div>`;
+        }
+
+        calHtml += `</div><div class="cal-grid">`;
+
+        // Background grid lines dynamically generated
+        let bgLines = '';
+        for (let m = 0; m <= 12 * 60; m += 30) {
+          const topPx = (m) * (52 / 60);
+          if (m % 60 === 0) {
+            bgLines += `<div style="position:absolute; left:0; right:0; top:${topPx}px; height:0.5px; background:var(--border); pointer-events:none; z-index:0;"></div>`;
+          } else {
+            bgLines += `<div style="position:absolute; left:0; right:0; top:${topPx}px; border-top:0.5px dashed var(--border); opacity:0.4; pointer-events:none; z-index:0;"></div>`;
+          }
+        }
+        calHtml += `<div class="cal-bg-lines" style="position:absolute; inset:0; z-index:0; pointer-events:none;">${bgLines}</div>`;
+
+        const now = new Date();
+        const nowMins = (now.getHours() * 60) + now.getMinutes();
+
+        dates.forEach(d => {
+          const isT = d.toDateString() === today.toDateString();
+          calHtml += `<div class="cal-col" style="z-index:1; position:relative;">`;
+
+          if (isT && nowMins >= 480 && nowMins <= 1240) {
+            const topPx = (nowMins - 480) * (52 / 60);
+            calHtml += `<div class="cal-now-line" style="top: ${topPx}px"></div>`;
+          }
+
+          const dayIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+          const dayAppts = DB.appointments.filter(a => a.date === dayIso && a.status !== 'cancelled');
+
+          let sortedAppts = [...dayAppts].map(a => {
+            const [h, m] = a.time.split(':').map(Number);
+            const svc = getService(a.serviceId);
+            return { ...a, startMins: h * 60 + m, dur: svc ? svc.duration : 30 };
+          }).sort((a, b) => a.startMins - b.startMins);
+
+          // Cal gaps for day view ONLY
+          if (dashViewType === 'day') {
+            let cur = 480;
+            sortedAppts.forEach(a => {
+              if (a.startMins - cur >= 30 && a.startMins <= 1260) {
+                const gapMins = a.startMins - cur;
+                const top = (cur - 480) * (52 / 60);
+                const height = gapMins * (52 / 60) - 3;
+                const hStr = pad(Math.floor(cur / 60)) + ':' + pad(cur % 60);
+                const text = gapMins >= 60 ? `+${(gapMins/60).toFixed(1).replace('.0','')}h libre` : `+${gapMins}min libre`;
+                   calHtml += '<div class="cal-gap" style="top:' + top + 'px; height:' + height + 'px;" onclick="openApptModal(null, null, \'' + hStr + '\', \'' + dayIso + '\')">' + text + '</div>';
+                }
+                cur = Math.max(cur, a.startMins + a.dur);
+             });
+             if (1200 - cur >= 30) {
+                const gapMins = 1200 - cur;
+                const top = (cur - 480) * (52/60);
+                const height = gapMins * (52/60) - 3;
+                const hStr = pad(Math.floor(cur/60)) + ':' + pad(cur%60);
+                const text = gapMins >= 60 ? `+${(gapMins/60).toFixed(1).replace('.0','')}h libre` : `+${gapMins}min libre`;
+                calHtml += '<div class="cal-gap" style="top:' + top + 'px; height:' + height + 'px;" onclick="openApptModal(null, null, \'' + hStr + '\', \'' + dayIso + '\')">' + text + '</div>';
+             }
+          }
+
+          sortedAppts.forEach(a => {
+            if (a.startMins < 480 || a.startMins >= 1260) return;
+
+            const svcIndex = DB.services.findIndex(s => s.id === a.serviceId);
+            const col = SVC_COLORS[svcIndex % SVC_COLORS.length] || SVC_COLORS[0];
+            
+            const cl = getClient(a.clientId);
+            const titleStr = cl ? cl.name : 'Anónimo';
+            const displayName = dashViewType === 'week' ? titleStr.split(' ')[0] : titleStr;
+            const top = (a.startMins - 480) * (52/60);
+            const height = Math.max((a.dur * (52/60)) - 3, 22);
+            
+            const isDone = a.status === 'done' || a.status === 'noshow';
+            const opacity = isDone ? 0.5 : 1;
+
+            calHtml += `<div class="cal-ev" style="top:${top}px; height:${height}px; background:${col.bg}; border-left-color:${col.border}; opacity:${opacity};" data-edit-appt="${a.id}" title="${a.time} - ${titleStr}">
+              <div class="ev-name" style="color:${col.text}">${displayName}</div>
+              ${height > 32 ? `<div class="ev-info" style="color:${col.text}">${a.time}${a.dur ? ' · ' + a.dur + 'm' : ''}</div>` : ''}
+            </div>`;
+          });
+          
+          calHtml += `</div>`;
+        });
+        
+        calHtml += `</div></div></div>`;
+        const calContainer = $('#dash-calendar');
+        if (calContainer) {
+          calContainer.innerHTML = calHtml;
+          
+          const bodyEl = calContainer.querySelector('.cal-body');
+          if (dashSelectedDate.toDateString() === today.toDateString() && bodyEl) {
+              const scrollTo = Math.max(0, ((nowMins - 480) * (52/60)) - 120);
+              bodyEl.scrollTop = scrollTo;
+          }
+        }
+
+        bindTLActions();
+      }
+
+      function bindTLActions() {
+        $$('[data-quick-active]').forEach(btn =>
+          on(btn, 'click', () => {
+            const a = DB.appointments.find(x => x.id === btn.dataset.quickActive);
+            if (a) { a.status = 'active'; persist(); renderView(currentView); toast('Cita en curso marcada', '▶'); }
+          })
+        );
+
+        $$('[data-quick-done]').forEach(btn =>
+          on(btn, 'click', () => {
+            const a = DB.appointments.find(x => x.id === btn.dataset.quickDone);
+            if (a) { a.status = 'done'; persist(); renderView(currentView); toast('Cita marcada como completada'); }
+          })
+        );
+        $$('[data-edit-appt]').forEach(btn => on(btn, 'click', () => openApptModal(btn.dataset.editAppt)));
+        $$('[data-del-appt]').forEach(btn =>
+          on(btn, 'click', () => confirmDelete('¿Eliminar esta cita? Esta acción no se puede deshacer.', () => {
+            DB.appointments = DB.appointments.filter(a => a.id !== btn.dataset.delAppt);
+            persist(); renderView(currentView); toast('Cita eliminada', '✕');
+          }))
+        );
+      }
+
+      /* ══════════════════════════════════════════════════════
+         AGENDA
+      ══════════════════════════════════════════════════════ */
+      function renderAgenda() {
+        const search = ($('#agenda-search').value || '').toLowerCase();
+        const status = $('#agenda-filter-status').value;
+        const date = $('#agenda-filter-date').value;
+
+        let list = [...DB.appointments].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).reverse();
+
+        if (search) list = list.filter(a => {
+          const cl = getClient(a.clientId);
+          const svc = getService(a.serviceId);
+          return (cl && cl.name.toLowerCase().includes(search)) || (svc && svc.name.toLowerCase().includes(search));
+        });
+        if (status) list = list.filter(a => a.status === status);
+        if (date) list = list.filter(a => a.date === date);
+
+        const tbody = $('#agenda-tbody');
+        if (!list.length) {
+          tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-icon">◎</div>No hay citas que coincidan</div></td></tr>`;
+          return;
+        }
+        tbody.innerHTML = list.map(a => {
+          const cl = getClient(a.clientId);
+          const svc = getService(a.serviceId);
+          return `<tr>
+        <td><strong>${a.time}</strong><br><span style="font-size:.68rem;color:var(--muted)">${fmtDate(a.date)}</span></td>
+        <td>${cl ? cl.name : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${svc ? svc.name : '<span style="color:var(--muted)">—</span>'}</td>
+        <td style="color:var(--muted)">${svc ? svc.duration + ' min' : '—'}</td>
+        <td>${fmtPrice(a.price)}</td>
+        <td><span class="${pillClass(a.status)}">${statusLabel(a.status)}</span></td>
+        <td><div class="td-actions">
+          <button class="td-btn" data-edit-appt="${a.id}">Editar</button>
+          <button class="td-btn danger" data-del-appt="${a.id}">Eliminar</button>
+        </div></td>
+      </tr>`;
+        }).join('');
+
+        bindTLActions();
+      }
+
+      // Filters
+      on($('#agenda-search'), 'input', renderAgenda);
+      on($('#agenda-filter-status'), 'change', renderAgenda);
+      on($('#agenda-filter-date'), 'change', renderAgenda);
+
+      /* ══════════════════════════════════════════════════════
+         CLIENTES
+      ══════════════════════════════════════════════════════ */
+      function renderClients() {
+        const search = ($('#clients-search').value || '').toLowerCase();
+        const tag = $('#clients-filter-tag').value;
+
+        let list = [...DB.clients];
+        if (search) list = list.filter(c => c.name.toLowerCase().includes(search) || (c.phone || '').includes(search));
+        if (tag) list = list.filter(c => c.tag === tag);
+
+        $('#clients-count').textContent = `${list.length} cliente${list.length !== 1 ? 's' : ''} registrado${list.length !== 1 ? 's' : ''}`;
+
+        const grid = $('#clients-grid');
+        if (!list.length) {
+          grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">◉</div>No hay clientes</div>';
+          return;
+        }
+
+        grid.innerHTML = list.map(c => {
+          const cAppts = DB.appointments.filter(a => a.clientId === c.id);
+          const cDone = cAppts.filter(a => a.status === 'done').sort((a, b) => b.date.localeCompare(a.date));
+          let daysAgo = '—';
+          if (cDone.length > 0) {
+            const diffMs = new Date() - new Date(cDone[0].date);
+            const diffDays = Math.floor(diffMs / 86400000);
+            if (diffDays === 0) daysAgo = 'Hoy';
+            else if (diffDays === 1) daysAgo = 'Ayer';
+            else if (diffDays < 7) daysAgo = `Hace ${diffDays}d`;
+            else if (diffDays < 30) daysAgo = `Hace ${Math.floor(diffDays / 7)} sem`;
+            else daysAgo = `Hace ${Math.floor(diffDays / 30)} mes`;
+          }
+          const cIncome = income(cDone);
+          const initials = c.name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+          const tagPill = c.tag ? `<span class="pill pill-${c.tag}">${c.tag === 'vip' ? '★ VIP' : c.tag === 'new' ? 'Nuevo' : 'Frecuente'}</span>` : '';
+          return `<div class="client-card">
+                  <div class="client-card-top">
+                    <div class="client-avatar">${initials}</div>
+                    <div>
+                      <div class="client-name">${c.name}</div>
+                      <div class="client-phone">${c.phone || c.email || 'Sin contacto'}</div>
+                    </div>
+                    ${tagPill}
+                  </div>
+        ${c.notes ? `<div class="client-notes">${c.notes}</div>` : ''}
+        <div class="client-stats">
+          <div class="cs-item"><div class="cs-val">${cAppts.length}</div><div class="cs-label">Citas</div></div>
+          <div class="cs-item"><div class="cs-val">${cDone.length}</div><div class="cs-label">Complet.</div></div>
+          <div class="cs-item"><div class="cs-val">${fmtPrice(cIncome)}</div><div class="cs-label">Total</div></div>
+        </div>
+        <div class="client-actions">
+          <button class="td-btn" style="flex:1" data-edit-client="${c.id}">Editar</button>
+          <button class="td-btn" style="flex:1" data-new-appt-client="${c.id}">+ Cita</button>
+          <button class="td-btn danger" data-del-client="${c.id}">✕</button>
+        </div>
+      </div>`;
+        }).join('');
+
+        $$('[data-edit-client]').forEach(btn => on(btn, 'click', () => openClientModal(btn.dataset.editClient)));
+        $$('[data-del-client]').forEach(btn =>
+          on(btn, 'click', () => confirmDelete('¿Eliminar este cliente?', () => {
+            DB.clients = DB.clients.filter(c => c.id !== btn.dataset.delClient);
+            persist(); renderClients(); toast('Cliente eliminado', '✕');
+          }))
+        );
+        $$('[data-new-appt-client]').forEach(btn =>
+          on(btn, 'click', () => openApptModal(null, btn.dataset.newApptClient))
+        );
+      }
+
+      on($('#clients-search'), 'input', renderClients);
+      on($('#clients-filter-tag'), 'change', renderClients);
+
+      /* ══════════════════════════════════════════════════════
+         SERVICIOS
+      ══════════════════════════════════════════════════════ */
+      function renderServices() {
+        const grid = $('#services-grid');
+        if (!DB.services.length) {
+          grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">◆</div>No hay servicios</div>';
+          return;
+        }
+        grid.innerHTML = DB.services.map((s, i) => {
+          const sAppts = DB.appointments.filter(a => a.serviceId === s.id && a.status === 'done');
+          return `<div class="service-card ${!s.active ? 'opacity: .5' : ''}">
+        <div class="service-num">${String(i + 1).padStart(2, '0')}</div>
+        <div class="service-name">${s.name}</div>
+        <div class="service-meta">${s.duration} min${s.desc ? ' · ' + s.desc : ''}</div>
+        <div class="service-price">${fmtPrice(s.price)}</div>
+        <div class="service-bottom">
+          <span class="${s.active ? 'pill pill-done' : 'pill pill-cancelled'}">${s.active ? 'Activo' : 'Inactivo'}</span>
+          <div class="service-actions">
+            <button class="td-btn" data-edit-svc="${s.id}">Editar</button>
+            <button class="td-btn danger" data-del-svc="${s.id}">✕</button>
+          </div>
+        </div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:.5rem">${sAppts.length} citas realizadas</div>
+      </div>`;
+        }).join('');
+
+        $$('[data-edit-svc]').forEach(btn => on(btn, 'click', () => openServiceModal(btn.dataset.editSvc)));
+        $$('[data-del-svc]').forEach(btn =>
+          on(btn, 'click', () => confirmDelete('¿Eliminar este servicio?', () => {
+            DB.services = DB.services.filter(s => s.id !== btn.dataset.delSvc);
+            persist(); renderServices(); toast('Servicio eliminado', '✕');
+          }))
+        );
+      }
+
+      /* ══════════════════════════════════════════════════════
+         INFORMES
+      ══════════════════════════════════════════════════════ */
+      function renderReports() {
+        const todayIncome = income(todayAppts().filter(a => a.status === 'done'));
+        const weekIncome = income(weekAppts().filter(a => a.status === 'done'));
+        const monthIncomeVal = income(monthAppts().filter(a => a.status === 'done'));
+
+        const allDone = DB.appointments.filter(a => a.status === 'done');
+        const total = income(allDone);
+        const ma = monthAppts();
+        const mDone = ma.filter(a => a.status === 'done');
+        const noShows = DB.appointments.filter(a => a.status === 'noshow').length;
+
+        // KPI cards
+        $('#rep-kpi-grid').innerHTML = `
+      <div class="rep-card"><div class="rep-label">Ingresos totales</div><div class="rep-val">${fmtPrice(total)}</div><div class="rep-ctx">Histórico de ${allDone.length} citas</div></div>
+      <div class="rep-card"><div class="rep-label">Ingresos este mes</div><div class="rep-val">${fmtPrice(income(mDone))}</div><div class="rep-ctx">${mDone.length} citas completadas</div></div>
+      <div class="rep-card"><div class="rep-label">No-shows</div><div class="rep-val">${noShows}</div><div class="rep-ctx">Citas sin presentarse</div></div>
+        `;
+
+        // Bar chart (últimos 7 días)
+        const days = Array.from({ length: 7 }, (_, i) => {
+          const d = new Date(today); d.setDate(today.getDate() - (6 - i));
+          return { iso: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, label: d.getDate() + '/' + (d.getMonth() + 1) };
+        });
+        const dayIncomes = days.map(d => income(DB.appointments.filter(a => a.date === d.iso && a.status === 'done')));
+        const maxI = Math.max(...dayIncomes, 1);
+        const chart = $('#bar-chart');
+        chart.innerHTML = days.map((d, i) => {
+          const h = Math.max(4, Math.round(dayIncomes[i] / maxI * 100));
+          return `<div class="bar-col">
+        <div class="bar-seg" title="${d.label}: ${fmtPrice(dayIncomes[i])}" style="height:${h}%"></div>
+        <div class="bar-lbl">${d.label}</div>
+      </div>`;
+        }).join('');
+
+        // Services table
+        const svcStats = DB.services.map(s => {
+          const sAppts = allDone.filter(a => a.serviceId === s.id);
+          return { name: s.name, count: sAppts.length, income: income(sAppts) };
+        }).sort((a, b) => b.count - a.count);
+
+        $('#rep-services-tbody').innerHTML = svcStats.map(s => {
+          const pct = total > 0 ? (s.income / total * 100).toFixed(1) : '0.0';
+          return `<tr>
+        <td>${s.name}</td>
+        <td>${s.count}</td>
+        <td>${fmtPrice(s.income)}</td>
+        <td>${pct}%</td>
+      </tr>`;
+        }).join('');
+      }
+
+      /* ══════════════════════════════════════════════════════
+         MODAL — APPOINTMENT
+      ══════════════════════════════════════════════════════ */
+      function openApptModal(id = null, preClientId = null, preTime = null, preDate = null) {
+        $('#modal-appt-title').textContent = id ? 'Editar cita' : 'Nueva cita';
+        $('#appt-id').value = id || '';
+
+        // Populate service select
+        const serviceSel = $('#appt-service');
+        serviceSel.innerHTML = '<option value="">Seleccionar servicio…</option>' + DB.services.filter(s => s.active).map(s => `<option value="${s.id}">${s.name} (${fmtPrice(s.price)})</option>`).join('');
+
+        if (id) {
+          const a = DB.appointments.find(x => x.id === id);
+          if (a) {
+            const clName = getClient(a.clientId)?.name || '';
+            $('#appt-client-name').value = clName;
+            $('#appt-client-id').value = a.clientId;
+
+            serviceSel.value = a.serviceId;
+            $('#appt-date').value = a.date;
+            $('#appt-time').value = a.time;
+            $('#appt-status').value = a.status;
+            $('#appt-price').value = a.price;
+            $('#appt-notes').value = a.notes || '';
+          }
+        } else {
+          const preClName = preClientId ? (getClient(preClientId)?.name || '') : '';
+          $('#appt-client-name').value = preClName;
+          $('#appt-client-id').value = preClientId || '';
+
+          $('#appt-date').value = preDate || todayISO;
+          $('#appt-time').value = preTime || '10:00';
+          $('#appt-status').value = 'pending';
+          $('#appt-price').value = '';
+          $('#appt-notes').value = '';
+        }
+
+        // Auto-fill price when service changes
+        on(serviceSel, 'change', () => {
+          const svc = getService(serviceSel.value);
+          if (svc) $('#appt-price').value = svc.price;
+        });
+
+        openModal('modal-appt');
+      }
+
+      on($('#btn-save-appt'), 'click', () => {
+        let clientId = $('#appt-client-id').value;
+        const clientName = $('#appt-client-name').value.trim();
+
+        if (!clientId && clientName) {
+          clientId = genId('c');
+          DB.clients.push({ id: clientId, name: clientName, phone: '', email: '', tag: 'new', notes: '' });
+          toast('Cliente nuevo creado: ' + clientName);
+        }
+
+        const serviceId = $('#appt-service').value;
+        const date = $('#appt-date').value;
+        const time = $('#appt-time').value;
+        if (!clientId || !serviceId || !date || !time) { toast('Rellena los campos obligatorios', '!'); return; }
+
+        const id = $('#appt-id').value;
+        const data = { clientId, serviceId, date, time, status: $('#appt-status').value, price: Number($('#appt-price').value) || 0, notes: $('#appt-notes').value };
+
+        if (id) {
+          Object.assign(DB.appointments.find(a => a.id === id), data);
+          toast('Cita actualizada');
+        } else {
+          DB.appointments.push({ id: genId('a'), ...data });
+          toast('Cita creada');
+        }
+        persist(); closeModal('modal-appt'); renderView(currentView);
+      });
+
+      on($('#btn-new-appt'), 'click', () => openApptModal());
+
+      // Client autocomplete listeners
+      on($('#appt-client-name'), 'input', function(e) {
+        const val = this.value.trim().toLowerCase();
+        const sugg = $('#appt-client-suggestions');
+        
+        if (!val) {
+          sugg.style.display = 'none';
+          $('#appt-client-id').value = '';
+          return;
+        }
+
+        // Si se cambia el texto, borramos el ID asumiendo que creará uno nuevo, a menos que elija del dropdown
+        $('#appt-client-id').value = '';
+
+        const results = DB.clients.filter(c => c.name.toLowerCase().includes(val)).slice(0, 5);
+        if (results.length > 0) {
+          sugg.innerHTML = results.map((c, i) => `<div class="appt-sugg-item" data-idx="${i}" style="padding:8px 12px; cursor:pointer; font-size:0.82rem; border-bottom:1px solid var(--border-2);">${c.name}</div>`).join('');
+          
+          $$('.appt-sugg-item', sugg).forEach(el => {
+             on(el, 'click', () => {
+                const client = results[el.dataset.idx];
+                $('#appt-client-name').value = client.name;
+                $('#appt-client-id').value = client.id;
+                sugg.style.display = 'none';
+             });
+             on(el, 'mouseenter', () => { el.style.background = 'var(--surface2)'; });
+             on(el, 'mouseleave', () => { el.style.background = 'transparent'; });
+          });
+          sugg.style.display = 'block';
+        } else {
+          sugg.style.display = 'none';
+        }
+      });
+
+      on(document, 'click', (e) => {
+        if (!e.target.closest('#appt-client-name') && !e.target.closest('#appt-client-suggestions')) {
+          const sugg = $('#appt-client-suggestions');
+          if (sugg) sugg.style.display = 'none';
+        }
+      });
+
+      /* ══════════════════════════════════════════════════════
+         MODAL — CLIENT
+      ══════════════════════════════════════════════════════ */
+      function openClientModal(id = null) {
+        $('#modal-client-title').textContent = id ? 'Editar cliente' : 'Nuevo cliente';
+        $('#client-id').value = id || '';
+        if (id) {
+          const c = DB.clients.find(x => x.id === id);
+          if (c) {
+            $('#client-name').value = c.name;
+            $('#client-phone').value = c.phone || '';
+            $('#client-email').value = c.email || '';
+            $('#client-tag').value = c.tag || '';
+            $('#client-notes').value = c.notes || '';
+          }
+        } else {
+          $('#client-name').value = '';
+          $('#client-phone').value = '';
+          $('#client-email').value = '';
+          $('#client-tag').value = '';
+          $('#client-notes').value = '';
+        }
+        openModal('modal-client');
+      }
+
+      on($('#btn-new-client'), 'click', () => openClientModal());
+      on($('#btn-save-client'), 'click', () => {
+        const name = $('#client-name').value.trim();
+        if (!name) { toast('El nombre es obligatorio', '!'); return; }
+        const id = $('#client-id').value;
+        const data = { name, phone: $('#client-phone').value.trim(), email: $('#client-email').value.trim(), tag: $('#client-tag').value, notes: $('#client-notes').value.trim() };
+        if (id) {
+          Object.assign(DB.clients.find(c => c.id === id), data);
+          toast('Cliente actualizado');
+        } else {
+          DB.clients.push({ id: genId('c'), ...data });
+          toast('Cliente creado');
+        }
+        persist(); closeModal('modal-client'); renderClients();
+      });
+
+      /* ══════════════════════════════════════════════════════
+         MODAL — SERVICE
+      ══════════════════════════════════════════════════════ */
+      function openServiceModal(id = null) {
+        $('#modal-service-title').textContent = id ? 'Editar servicio' : 'Nuevo servicio';
+        $('#svc-id').value = id || '';
+        if (id) {
+          const s = DB.services.find(x => x.id === id);
+          if (s) {
+            $('#svc-name').value = s.name;
+            $('#svc-price').value = s.price;
+            $('#svc-dur').value = s.duration;
+            $('#svc-desc').value = s.desc || '';
+            $('#svc-active').value = String(s.active);
+          }
+        } else {
+          $('#svc-name').value = '';
+          $('#svc-price').value = '';
+          $('#svc-dur').value = '30';
+          $('#svc-desc').value = '';
+          $('#svc-active').value = 'true';
+        }
+        openModal('modal-service');
+      }
+
+      on($('#btn-new-service'), 'click', () => openServiceModal());
+      on($('#btn-save-service'), 'click', () => {
+        const name = $('#svc-name').value.trim();
+        if (!name) { toast('El nombre del servicio es obligatorio', '!'); return; }
+        const id = $('#svc-id').value;
+        const data = { name, price: Number($('#svc-price').value) || 0, duration: Number($('#svc-dur').value) || 30, desc: $('#svc-desc').value.trim(), active: $('#svc-active').value === 'true' };
+        if (id) {
+          Object.assign(DB.services.find(s => s.id === id), data);
+          toast('Servicio actualizado');
+        } else {
+          DB.services.push({ id: genId('s'), ...data });
+          toast('Servicio creado');
+        }
+        persist(); closeModal('modal-service'); renderServices();
+      });
+
+      /* ══════════════════════════════════════════════════════
+         CONFIRM DELETE
+      ══════════════════════════════════════════════════════ */
+      let _confirmCb = null;
+      function confirmDelete(msg, cb) {
+        $('#confirm-msg').textContent = msg;
+        _confirmCb = cb;
+        openModal('modal-confirm');
+      }
+      on($('#btn-confirm-ok'), 'click', () => {
+        if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+        closeModal('modal-confirm');
+      });
+
+      /* ══════════════════════════════════════════════════════
+         INIT
+      ══════════════════════════════════════════════════════ */
+      function goToDay(isoStr) {
+        dashSelectedDate = new Date(isoStr + 'T12:00:00');
+        dashViewType = 'day';
+        renderDashboard();
+      }
+
+      window.openApptModal = openApptModal;
+      window.renderDashboard = renderDashboard;
+      window.dashViewType = dashViewType;
+      window.goToDay = goToDay;
+
+      document.getElementById('dash-nav').style.display = 'flex';
+      document.getElementById('topbar-date').style.display = 'none';
+      renderDashboard();
+
+    })();
+  </script>
 </body>
 
 </html>
