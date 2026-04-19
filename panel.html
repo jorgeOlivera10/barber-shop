@@ -957,6 +957,12 @@
       gap: .75rem;
     }
 
+    @media(max-width: 600px) {
+      .fgrow {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* ── BUTTONS ── */
     .btn {
       display: inline-flex;
@@ -1296,6 +1302,27 @@
     }
 
     @media(max-width:600px) {
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal {
+        max-width: 100%;
+        max-height: 92dvh;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .modal-footer {
+        flex-direction: column-reverse;
+      }
+
+      .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+        padding: .85rem;
+      }
+
       .kpi-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -2047,25 +2074,23 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="appt-id">
-        <div class="fgrow">
-          <div class="fg">
-            <label>Cliente <span style="color:var(--gold)">*</span></label>
-            <div style="position:relative">
-              <input type="text" id="appt-client-name" placeholder="Nombre del cliente…" autocomplete="off">
-              <input type="hidden" id="appt-client-id">
-              <div id="appt-client-suggestions" style="
-                position:absolute; z-index:600; background:var(--surface);
-                border:1px solid var(--border-2); border-top:none; max-height:160px; 
-                overflow-y:auto; width:100%; display:none;
-              "></div>
-            </div>
+        <div class="fg">
+          <label>Cliente <span style="color:var(--gold)">*</span></label>
+          <div style="position:relative">
+            <input type="text" id="appt-client-name" placeholder="Nombre del cliente…" autocomplete="off">
+            <input type="hidden" id="appt-client-id">
+            <div id="appt-client-suggestions" style="
+              position:absolute; z-index:600; background:var(--surface);
+              border:1px solid var(--border-2); border-top:none;
+              max-height:160px; overflow-y:auto; width:100%; display:none;
+            "></div>
           </div>
-          <div class="fg">
-            <label>Servicio <span style="color:var(--gold)">*</span></label>
-            <select id="appt-service">
-              <option value="">Seleccionar…</option>
-            </select>
-          </div>
+        </div>
+        <div class="fg">
+          <label>Servicio <span style="color:var(--gold)">*</span></label>
+          <select id="appt-service">
+            <option value="">Seleccionar…</option>
+          </select>
         </div>
         <div class="fgrow">
           <div class="fg">
@@ -2077,25 +2102,37 @@
             <input type="time" id="appt-time" value="10:00">
           </div>
         </div>
-        <div class="fgrow">
-          <div class="fg">
-            <label>Estado</label>
-            <select id="appt-status">
-              <option value="pending">Pendiente</option>
-              <option value="active">En curso</option>
-              <option value="done">Completada</option>
-              <option value="cancelled">Cancelada</option>
-              <option value="noshow">No show</option>
-            </select>
+        <button type="button" id="btn-toggle-advanced" style="
+          background:none; border:none; color:var(--muted); font-size:.72rem;
+          font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+          cursor:pointer; padding:.25rem 0; text-align:left;
+        " onclick="
+          const adv = document.getElementById('appt-advanced');
+          const open = adv.style.display !== 'none';
+          adv.style.display = open ? 'none' : 'flex';
+          this.textContent = open ? '▸ Opciones avanzadas' : '▾ Opciones avanzadas';
+        ">▸ Opciones avanzadas</button>
+        <div id="appt-advanced" style="display:none; flex-direction:column; gap:.875rem;">
+          <div class="fgrow">
+            <div class="fg">
+              <label>Estado</label>
+              <select id="appt-status">
+                <option value="pending">Pendiente</option>
+                <option value="active">En curso</option>
+                <option value="done">Completada</option>
+                <option value="cancelled">Cancelada</option>
+                <option value="noshow">No show</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Importe (€)</label>
+              <input type="number" id="appt-price" placeholder="Auto desde servicio" min="0" step="0.5">
+            </div>
           </div>
           <div class="fg">
-            <label>Importe (€)</label>
-            <input type="number" id="appt-price" placeholder="Auto desde servicio" min="0" step="0.5">
+            <label>Notas internas</label>
+            <textarea id="appt-notes" placeholder="Preferencias, información adicional…"></textarea>
           </div>
-        </div>
-        <div class="fg">
-          <label>Notas internas</label>
-          <textarea id="appt-notes" placeholder="Preferencias, información adicional…"></textarea>
         </div>
       </div>
       <div class="modal-footer">
