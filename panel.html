@@ -1299,6 +1299,44 @@
       }
     }
 
+    @media(max-width:900px) {
+      /* Ocultar controles cal del topbar en móvil */
+      #dash-nav { display: none !important; }
+    }
+
+    /* Impedir overflow horizontal en todo el calendario */
+    #dash-calendar { width: 100%; overflow: hidden; }
+    .cal-wrap { width: 100%; max-width: 100%; overflow: hidden; }
+    .cal-body { overflow-x: hidden; overflow-y: auto; }
+    .cal-grid { min-width: 0; overflow: hidden; flex: 1; }
+    .cal-col { flex: 1; min-width: 0; overflow: hidden; position: relative; border-right: 1px solid var(--border); }
+    .cal-col:last-child { border-right: none; }
+
+    /* Reducir columna horas en móvil */
+    @media(max-width:600px) {
+      .cal-hours { width: 32px; min-width: 32px; }
+      .cal-header-spacer { width: 32px; min-width: 32px; }
+      .cal-hour-label { font-size: 0.5rem; padding-right: 3px; }
+      /* Recortar texto de gaps en móvil */
+      .cal-gap { font-size: 0; }
+      .cal-gap::after { content: '+'; font-size: 9px; color: var(--muted); }
+      .cal-body { height: 400px; }
+
+      /* Vista semana: scroll horizontal */
+      .cal-body.week-mode { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .cal-body.week-mode .cal-grid { min-width: 420px; }
+      .cal-body.week-mode .cal-col { min-width: 56px; flex-shrink: 0; }
+      .cal-header.week-header .cal-header-days { overflow-x: auto; scrollbar-width: none; }
+      .cal-header.week-header .cal-header-days::-webkit-scrollbar { display: none; }
+      .cal-header.week-header .cal-header-day { min-width: 56px; flex-shrink: 0; }
+    }
+
+    @media(max-width:600px) {
+      .btn-new { padding: 0.5rem 0.875rem; font-size: 0.65rem; letter-spacing: 0.06em; }
+      .topbar { padding: 0 0.875rem; }
+      .topbar-context h1 { font-size: 0.95rem; }
+    }
+
     /* ── TOAST ── */
     #toast {
       position: fixed;
@@ -1678,6 +1716,17 @@
           <span class="topbar-date" id="topbar-date"></span>
           <button class="btn-new" id="btn-new-appt">＋ NUEVA CITA</button>
         </div>
+      </div>
+
+      <div id="dash-subbar" style="display:none; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:nowrap;">
+        <div style="background:var(--surface2); border-radius:6px; display:flex; padding:2px; border:1px solid var(--border); flex-shrink:0;">
+          <button id="btn-view-day-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,0.1);">Día</button>
+          <button id="btn-view-week-m" style="padding:5px 12px; font-size:0.72rem; font-weight:600; border-radius:4px; color:var(--text-soft);">Semana</button>
+        </div>
+        <button id="btn-nav-prev-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;">‹</button>
+        <span id="dash-date-label-m" style="flex:1;font-size:0.78rem;font-weight:600;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <button id="btn-nav-next-m" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:1rem;flex-shrink:0;">›</button>
+        <button id="btn-nav-today-m" style="display:none;padding:4px 10px;font-size:0.68rem;font-weight:700;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--gold);flex-shrink:0;">Hoy</button>
       </div>
 
       <!-- CONTENT -->
@@ -2154,7 +2203,15 @@
           $('#view-subtitle').textContent = meta.subtitle;
         }
 
-        if ($('#dash-nav')) $('#dash-nav').style.display = name === 'dashboard' ? 'flex' : 'none';
+        const isDash = name === 'dashboard';
+        const isNarrow = window.innerWidth <= 900;
+        // Desktop: controles en topbar
+        const desktopNav = document.getElementById('dash-nav');
+        if (desktopNav) desktopNav.style.display = isDash && !isNarrow ? 'flex' : 'none';
+        // Móvil: subbar debajo del topbar
+        const subbar = document.getElementById('dash-subbar');
+        if (subbar) subbar.style.display = isDash && isNarrow ? 'flex' : 'none';
+
         if ($('#topbar-date')) $('#topbar-date').style.display = name === 'dashboard' ? 'none' : 'block';
 
         renderView(name);
@@ -2239,6 +2296,13 @@
           dashSelectedDate = new Date(today);
           renderDashboard();
         });
+
+        // Controles móvil
+        on(document.getElementById('btn-view-day-m'), 'click', () => { dashViewType = 'day'; renderDashboard(); });
+        on(document.getElementById('btn-view-week-m'), 'click', () => { dashViewType = 'week'; renderDashboard(); });
+        on(document.getElementById('btn-nav-prev-m'), 'click', () => { dashSelectedDate.setDate(dashSelectedDate.getDate() - (dashViewType === 'week' ? 7 : 1)); renderDashboard(); });
+        on(document.getElementById('btn-nav-next-m'), 'click', () => { dashSelectedDate.setDate(dashSelectedDate.getDate() + (dashViewType === 'week' ? 7 : 1)); renderDashboard(); });
+        on(document.getElementById('btn-nav-today-m'), 'click', () => { dashSelectedDate = new Date(); renderDashboard(); });
       }, 0);
 
       const SVC_COLORS = [
@@ -2253,7 +2317,11 @@
         if (!$('#btn-nav-today')) return;
 
         const isToday = dashSelectedDate.toDateString() === today.toDateString();
-        $('#btn-nav-today').style.display = isToday ? 'none' : 'block';
+        
+        ['btn-nav-today', 'btn-nav-today-m'].forEach(id => {
+          const b = document.getElementById(id);
+          if (b) b.style.display = isToday ? 'none' : 'block';
+        });
 
         if (dashViewType === 'day') {
           $('#btn-view-day').style.background = 'var(--surface)';
@@ -2262,6 +2330,17 @@
           $('#btn-view-week').style.background = 'transparent';
           $('#btn-view-week').style.boxShadow = 'none';
           $('#btn-view-week').style.color = 'var(--text-soft)';
+          
+          if($('#btn-view-day-m')) {
+            $('#btn-view-day-m').style.background = 'var(--surface)';
+            $('#btn-view-day-m').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            $('#btn-view-day-m').style.color = 'var(--text)';
+          }
+          if($('#btn-view-week-m')) {
+            $('#btn-view-week-m').style.background = 'transparent';
+            $('#btn-view-week-m').style.boxShadow = 'none';
+            $('#btn-view-week-m').style.color = 'var(--text-soft)';
+          }
         } else {
           $('#btn-view-week').style.background = 'var(--surface)';
           $('#btn-view-week').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
@@ -2269,13 +2348,25 @@
           $('#btn-view-day').style.background = 'transparent';
           $('#btn-view-day').style.boxShadow = 'none';
           $('#btn-view-day').style.color = 'var(--text-soft)';
+
+          if($('#btn-view-week-m')) {
+            $('#btn-view-week-m').style.background = 'var(--surface)';
+            $('#btn-view-week-m').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            $('#btn-view-week-m').style.color = 'var(--text)';
+          }
+          if($('#btn-view-day-m')) {
+            $('#btn-view-day-m').style.background = 'transparent';
+            $('#btn-view-day-m').style.boxShadow = 'none';
+            $('#btn-view-day-m').style.color = 'var(--text-soft)';
+          }
         }
 
         // Determinar periodo
         let dates = [];
+        let labelText = '';
         if (dashViewType === 'day') {
           dates.push(new Date(dashSelectedDate));
-          $('#dash-date-label').textContent = `${DAYS_ES[dashSelectedDate.getDay()].charAt(0).toUpperCase() + DAYS_ES[dashSelectedDate.getDay()].slice(1)}, ${dashSelectedDate.getDate()} ${MONTHS_ES[dashSelectedDate.getMonth()]}`;
+          labelText = `${DAYS_ES[dashSelectedDate.getDay()].charAt(0).toUpperCase() + DAYS_ES[dashSelectedDate.getDay()].slice(1)}, ${dashSelectedDate.getDate()} ${MONTHS_ES[dashSelectedDate.getMonth()]}`;
         } else {
           // Obtener el lunes de esta semana
           const d = new Date(dashSelectedDate);
@@ -2288,8 +2379,13 @@
           }
           const start = dates[0];
           const end = dates[6];
-          $('#dash-date-label').textContent = `${start.getDate()} — ${end.getDate()} ${MONTHS_ES[end.getMonth()]}`;
+          labelText = `${start.getDate()} — ${end.getDate()} ${MONTHS_ES[end.getMonth()]}`;
         }
+        
+        const lbl = document.getElementById('dash-date-label');
+        const lblM = document.getElementById('dash-date-label-m');
+        if (lbl) lbl.textContent = labelText;
+        if (lblM) lblM.textContent = labelText;
 
         // Obtener citas
         const isoDates = dates.map(d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
@@ -2304,79 +2400,81 @@
         const perf = totalAppts > 0 ? Math.round((doneAppts / totalAppts) * 100) : 0;
 
         // Render KPIs
-        $('#kpi-grid').innerHTML = `
-          <div class="kpi-card" style="grid-column: span 1;">
-            <div class="kpi-label">TOTAL CITAS ${dashViewType === 'day' ? 'DEL DÍA' : 'DE LA SEMANA'}</div>
-            <div class="kpi-value">${totalAppts}</div>
-            <div class="kpi-sub">${doneAppts} completadas · ${pendingAppts} pendientes</div>
-          </div>
-          <div class="kpi-card" style="grid-column: span 1;">
-            <div class="kpi-label">PROGRESO</div>
-            <div class="kpi-value">${perf}%</div>
-            <div style="height:3px; background:var(--surface2); margin-top:8px; border-radius:1.5px; overflow:hidden">
-              <div style="height:100%; width:${perf}%; background:var(--gold); transition:width 0.5s"></div>
-            </div>
-          </div>
-          <div class="kpi-card" style="grid-column: span 1;">
-            <div class="kpi-label">NO-SHOWS DE ${dashViewType === 'day' ? 'HOY' : 'LA SEMANA'}</div>
-            <div class="kpi-value" style="color:${noshowAppts > 0 ? 'var(--red)' : 'var(--text)'}">${noshowAppts}</div>
-            <div class="kpi-sub">Citas perdidas en el periodo</div>
-          </div>
-        `;
+        $('#kpi-grid').innerHTML = 
+          '<div class="kpi-card" style="grid-column: span 1;">' +
+            '<div class="kpi-label">TOTAL CITAS ' + (dashViewType === 'day' ? 'DEL DÍA' : 'DE LA SEMANA') + '</div>' +
+            '<div class="kpi-value">' + totalAppts + '</div>' +
+            '<div class="kpi-sub">' + doneAppts + ' completadas · ' + pendingAppts + ' pendientes</div>' +
+          '</div>' +
+          '<div class="kpi-card" style="grid-column: span 1;">' +
+            '<div class="kpi-label">PROGRESO</div>' +
+            '<div class="kpi-value">' + perf + '%</div>' +
+            '<div style="height:3px; background:var(--surface2); margin-top:8px; border-radius:1.5px; overflow:hidden">' +
+              '<div style="height:100%; width:' + perf + '%; background:var(--gold); transition:width 0.5s"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="kpi-card" style="grid-column: span 1;">' +
+            '<div class="kpi-label">NO-SHOWS DE ' + (dashViewType === 'day' ? 'HOY' : 'LA SEMANA') + '</div>' +
+            '<div class="kpi-value" style="color:' + (noshowAppts > 0 ? 'var(--red)' : 'var(--text)') + '">' + noshowAppts + '</div>' +
+            '<div class="kpi-sub">Citas perdidas en el periodo</div>' +
+          '</div>';
         $('#kpi-grid').style.gridTemplateColumns = 'repeat(3, 1fr)';
 
         // Render Calendar
-        let calHtml = `<div class="cal-wrap"><div class="cal-header"><div class="cal-header-spacer"></div><div class="cal-header-days">`;
+        const calHeaderClass = dashViewType === 'week' ? 'cal-header week-header' : 'cal-header';
+        const calBodyClass = dashViewType === 'week' ? 'cal-body week-mode' : 'cal-body';
+
+        let calHtml = '<div class="cal-wrap"><div class="' + calHeaderClass + '"><div class="cal-header-spacer"></div><div class="cal-header-days">';
 
         dates.forEach(d => {
           const isT = d.toDateString() === today.toDateString();
           const dayName = DAYS_ES[d.getDay()].substring(0, 3);
-          const dStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T12:00:00`;
+          const dStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T12:00:00';
           if (dashViewType === 'week') {
-            const dateIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-            calHtml += `<div class="cal-header-day" style="cursor:pointer" onclick="goToDay('${dateIso}')">
-              <span style="font-size:0.65rem">${dayName}</span>
-              ${isT ? `<div style="width:24px; height:24px; border-radius:50%; background:var(--gold); color:white; display:flex; align-items:center; justify-content:center; font-size:1rem; margin-top:4px;">${d.getDate()}</div>` : `<span style="font-size:1.1rem; color:var(--text); margin-top:4px; margin-bottom:4px;">${d.getDate()}</span>`}
-            </div>`;
+            const dateIso = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+            calHtml += '<div class="cal-header-day" style="cursor:pointer" onclick="goToDay(\'' + dateIso + '\')">' +
+              '<span style="font-size:0.65rem">' + dayName + '</span>' +
+              (isT ? '<div style="width:24px; height:24px; border-radius:50%; background:var(--gold); color:white; display:flex; align-items:center; justify-content:center; font-size:1rem; margin-top:4px;">' + d.getDate() + '</div>' : '<span style="font-size:1.1rem; color:var(--text); margin-top:4px; margin-bottom:4px;">' + d.getDate() + '</span>') +
+            '</div>';
           } else {
-            calHtml += `<div class="cal-header-day">
-              <span style="font-size:0.65rem">${dayName}</span>
-              <span style="font-size:1.1rem; color:var(--text)">${d.getDate()}</span>
-            </div>`;
+            calHtml += '<div class="cal-header-day">' +
+              '<span style="font-size:0.65rem">' + dayName + '</span>' +
+              '<span style="font-size:1.1rem; color:var(--text)">' + d.getDate() + '</span>' +
+            '</div>';
           }
         });
-        calHtml += `</div></div>`;
+        calHtml += '</div></div>';
 
-        calHtml += `<div class="cal-body">
-          <div class="cal-hours">`;
+        calHtml += '<div class="' + calBodyClass + '">' +
+          '<div class="cal-hours">';
         for (let h = 8; h <= 20; h++) {
-          calHtml += `<div class="cal-hour-label">${pad(h)}:00</div>`;
+          calHtml += '<div class="cal-hour-label">' + pad(h) + ':00</div>';
         }
 
-        calHtml += `</div><div class="cal-grid">`;
+        calHtml += '</div><div class="cal-grid">';
 
         // Background grid lines dynamically generated
         let bgLines = '';
         for (let m = 0; m <= 12 * 60; m += 30) {
           const topPx = (m) * (52 / 60);
           if (m % 60 === 0) {
-            bgLines += `<div style="position:absolute; left:0; right:0; top:${topPx}px; height:0.5px; background:var(--border); pointer-events:none; z-index:0;"></div>`;
+            bgLines += '<div style="position:absolute; left:0; right:0; top:' + topPx + 'px; height:0.5px; background:var(--border); pointer-events:none; z-index:0;"></div>';
           } else {
-            bgLines += `<div style="position:absolute; left:0; right:0; top:${topPx}px; border-top:0.5px dashed var(--border); opacity:0.4; pointer-events:none; z-index:0;"></div>`;
+            bgLines += '<div style="position:absolute; left:0; right:0; top:' + topPx + 'px; border-top:0.5px dashed var(--border); opacity:0.4; pointer-events:none; z-index:0;"></div>';
           }
         }
-        calHtml += `<div class="cal-bg-lines" style="position:absolute; inset:0; z-index:0; pointer-events:none;">${bgLines}</div>`;
+        calHtml += '<div class="cal-bg-lines" style="position:absolute; inset:0; z-index:0; pointer-events:none;">' + bgLines + '</div>';
 
         const now = new Date();
         const nowMins = (now.getHours() * 60) + now.getMinutes();
 
         dates.forEach(d => {
           const isT = d.toDateString() === today.toDateString();
-          calHtml += `<div class="cal-col" style="z-index:1; position:relative;">`;
+          calHtml += '<div class="cal-col" style="z-index:1; position:relative;">';
 
           if (isT && nowMins >= 480 && nowMins <= 1240) {
             const topPx = (nowMins - 480) * (52 / 60);
-            calHtml += `<div class="cal-now-line" style="top: ${topPx}px"></div>`;
+            calHtml += '<div class="cal-now-line" style="top: ' + topPx + 'px"></div>';
           }
 
           const dayIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -2427,16 +2525,16 @@
             const isDone = a.status === 'done' || a.status === 'noshow';
             const opacity = isDone ? 0.5 : 1;
 
-            calHtml += `<div class="cal-ev" style="top:${top}px; height:${height}px; background:${col.bg}; border-left-color:${col.border}; opacity:${opacity};" data-edit-appt="${a.id}" title="${a.time} - ${titleStr}">
-              <div class="ev-name" style="color:${col.text}">${displayName}</div>
-              ${height > 32 ? `<div class="ev-info" style="color:${col.text}">${a.time}${a.dur ? ' · ' + a.dur + 'm' : ''}</div>` : ''}
-            </div>`;
+            calHtml += '<div class="cal-ev" style="top:' + top + 'px; height:' + height + 'px; background:' + col.bg + '; border-left-color:' + col.border + '; opacity:' + opacity + ';" data-edit-appt="' + a.id + '" title="' + a.time + ' - ' + titleStr + '">' +
+              '<div class="ev-name" style="color:' + col.text + '">' + displayName + '</div>' +
+              (height > 32 ? '<div class="ev-info" style="color:' + col.text + '">' + a.time + (a.dur ? ' · ' + a.dur + 'm' : '') + '</div>' : '') +
+            '</div>';
           });
           
-          calHtml += `</div>`;
+          calHtml += '</div>';
         });
         
-        calHtml += `</div></div></div>`;
+        calHtml += '</div></div></div>';
         const calContainer = $('#dash-calendar');
         if (calContainer) {
           calContainer.innerHTML = calHtml;
@@ -2910,9 +3008,17 @@
       window.openApptModal = openApptModal;
       window.renderDashboard = renderDashboard;
       window.dashViewType = dashViewType;
+      window.dashSelectedDate = dashSelectedDate;
       window.goToDay = goToDay;
 
-      document.getElementById('dash-nav').style.display = 'flex';
+      const _nav = document.getElementById('dash-nav');
+      const _sub = document.getElementById('dash-subbar');
+      if (window.innerWidth <= 900) {
+        if (_sub) _sub.style.display = 'flex';
+      } else {
+        if (_nav) _nav.style.display = 'flex';
+      }
+      
       document.getElementById('topbar-date').style.display = 'none';
       renderDashboard();
 
